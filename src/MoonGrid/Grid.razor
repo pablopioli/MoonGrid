@@ -1,0 +1,161 @@
+﻿@typeparam TItem
+
+<link href="_content/MoonGrid/styles.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+<div class="container-fluid my-2">
+    <div class="float-md-left">
+        @if (ShowAddNewButton)
+        {
+            <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated">@AddNewButtonText</button>
+        }
+
+        @if (OrderOptions.Count() > 0)
+        {
+            <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
+                <span class="mr-1">@GridConfiguration.Default.OrderByText</span>
+                <select id="pagecount" class="select-css select-buttonheight mr-md-2" @onchange="OnSelectOrder">
+                    @foreach (var item in OrderOptions)
+                    {
+                        <option value="@item.Id">@item.DisplayText</option>
+                    }
+                </select>
+            </span>
+        }
+
+        @if (ShowFilterButton)
+        {
+            <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
+                @if (IsFilterActive)
+                {
+                    <i class="@GridConfiguration.Default.FilterEnabledIcon"></i>
+                }
+                else
+                {
+                    <i class="@GridConfiguration.Default.FilterDisabledIcon"></i>
+                }
+                @GridConfiguration.Default.FilterButtonText
+            </button>
+
+            <div id="grid-filter" class="collapse my-2">
+                @FilterTemplate
+            </div>
+        }
+    </div>
+
+    @if (ActionButtons.Count > 0)
+    {
+        <div class="float-md-right">
+            @foreach (var action in ActionButtons)
+            {
+                <button type="button" class="btn btn-secondary my-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
+            }
+        </div>
+    }
+</div>
+
+@if (Data.Length == 0 && NoDataTemplate != null)
+{
+    <div class="container-fluid my-2 float-left">
+        @NoDataTemplate
+    </div>
+}
+else
+{
+    <div class="container-fluid my-2">
+        <div class="table-responsive">
+            <table class="table table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "")" style="font-family:'Lato', sans-serif;">
+                <thead>
+                    <tr>
+                        @foreach (var column in Columns)
+                        {
+                            var style = ComputeStyle(column);
+                            var className = ComputeClass(column);
+                            <th style="@style" class="@className">
+                                @column.Title
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var row in Data)
+                    {
+                        <tr>
+                            @foreach (var column in Columns)
+                            {
+                                var style = ComputeStyle(column);
+                                var className = ComputeClass(column);
+                                @if (column.Template == null)
+                                {
+                                    <td style="word-break:break-all;@style" class="@className">
+                                        @column.Source.Invoke(row)
+                                    </td>
+                                }
+                                else
+                                {
+                                    RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
+                                    <td style="@style" class="@className">
+                                        <CascadingValue Value="@row">
+                                            @renderFragment
+                                        </CascadingValue>
+                                    </td>
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+                @if (Data.Length > 0 && ShowTableFooter)
+                {
+                    <tfoot>
+                        <tr>
+                            @foreach (var column in Columns)
+                            {
+                                var style = ComputeStyle(column);
+                                var className = ComputeClass(column);
+                                <th style="@style" class="@className">
+                                    @column.Title
+                                </th>
+                            }
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+    </div>
+}
+
+@if (Data.Length > 0 && IsPageable)
+{
+    <div class="container-fluid my-2">
+        <div class="float-left">
+            <div class="my-1">
+                <label for="pagecount">@GridConfiguration.Default.ItemsPerPage</label>
+                <select id="pagecount" class="ml-2" @onchange="OnSelectPageSize">
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="50" selected="selected">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+        </div>
+
+        <nav class="float-right my-1">
+            <ul class="pagination">
+                <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" @onclick="MoveBack">
+                        <i class="far fa-chevron-double-left"></i>
+                        @GridConfiguration.Default.PreviousButtonText
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                        @(string.Format(GridConfiguration.Default.PageNumberText, QueryOptions.PageNumber))
+                    </a>
+                </li>
+                <li class="page-item@(!HasMoreData ? " disabled" : "")">
+                    <a class="page-link" @onclick="MoveNext">@GridConfiguration.Default.NextButtonText <i class="far fa-chevron-double-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}

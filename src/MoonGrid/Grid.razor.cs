@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace MoonGrid
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
 
+        [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
+
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
         private QueryOptions QueryOptions { get; set; } = new QueryOptions();
         public bool HasMoreData { get; private set; }
@@ -40,7 +43,18 @@ namespace MoonGrid
             {
                 QueryOptions.PageSize = int.Parse(value);
                 QueryOptions.PageNumber = 1;
-                Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
+
+                Dispatcher.CreateDefault().InvokeAsync(async () =>
+                {
+                    try
+                    {
+                        await UpdateCurrentData(true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.LogError(ex.ToString());
+                    }
+                });
             }
         }
 
@@ -102,8 +116,13 @@ namespace MoonGrid
             }
         }
 
-        private async Task UpdateCurrentData()
+        private async Task UpdateCurrentData(bool ex = false)
         {
+            if (ex)
+            {
+                throw new Exception();
+            }
+
             var result = await DataSource.Invoke(QueryOptions);
 
             if (result.ResultData == null)

@@ -1,9 +1,11 @@
-﻿namespace MoonGrid
+﻿using System.Threading.Tasks;
+
+namespace MoonGrid
 {
     public class EventCallbacks
     {
-        public delegate void FilterStatusChange(bool isActive);
-        public delegate void StatusHasChanged();
+        public delegate Task FilterStatusChange(bool isActive);
+        public delegate Task StatusHasChanged();
 
         public event FilterStatusChange OnFilterStatusChanged;
         public event StatusHasChanged OnStatusHasChanged;

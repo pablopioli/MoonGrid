@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30021.99
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample", "Sample\Sample.csproj", "{114A18F8-6D2A-4F79-BF96-A088E76CC918}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoonGrid", "MoonGrid\MoonGrid.csproj", "{3AE686E1-BBA9-4A84-854F-F4748A140D4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoonGrid", "MoonGrid\MoonGrid.csproj", "{3AE686E1-BBA9-4A84-854F-F4748A140D4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

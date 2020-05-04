@@ -2,19 +2,34 @@
     width: 100%;
 }
 
-    .moongrid-table tr:nth-child(odd) > td {
+.moongrid-cell {
+    overflow-wrap: break-word;
+}
+
+.moongrid-table-striped {
+}
+
+    .moongrid-table-striped tr:nth-child(odd) > td {
         background-color: white;
     }
 
-    .moongrid-table tr:nth-child(even) > td {
+    .moongrid-table-striped tr:nth-child(even) > td {
         background-color: #F2F2F2;
     }
 
-    .moongrid-table tr:nth-child(odd) > th {
+    .moongrid-table-striped tr:nth-child(odd) > th {
         background-color: rgb(36, 80, 105);
         color: white;
         font-weight: 200;
     }
+
+.downchevron:after {
+    content: '\2BC6';
+}
+
+.upchevron:after {
+    content: '\2BC5';
+}
 
 .mg-table-coolfreeze {
 }

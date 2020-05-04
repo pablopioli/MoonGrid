@@ -3,7 +3,7 @@
 <link href="_content/MoonGrid/styles.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
-<div class="container-fluid my-2">
+<div class="container-fluid">
     <div class="float-md-left">
         @if (ShowAddNewButton)
         {
@@ -64,9 +64,14 @@ else
 {
     <div class="container-fluid my-2">
         <div class="table-responsive">
-            <table class="table table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "")" style="font-family:'Lato', sans-serif;">
+            <table class="table table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "")" style="font-family:'Lato', sans-serif;">
                 <thead>
                     <tr>
+                        @if (Expandable)
+                        {
+                            <th></th>
+                        }
+
                         @foreach (var column in Columns)
                         {
                             var style = ComputeStyle(column);
@@ -80,28 +85,51 @@ else
                 <tbody>
                     @foreach (var row in Data)
                     {
+                        var item = row.Item;
                         <tr>
+                            @if (Expandable)
+                            {
+                                <td>
+                                    @if (row.Expanded)
+                                    {
+                                        <div class="upchevron" @onclick="@(() => ContractItem(row))"></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="downchevron" @onclick="@(() => ExpandItem(row))"></div>
+                                    }
+                                </td>
+                            }
+
                             @foreach (var column in Columns)
                             {
                                 var style = ComputeStyle(column);
                                 var className = ComputeClass(column);
                                 @if (column.Template == null)
                                 {
-                                    <td style="word-break:break-all;@style" class="@className">
-                                        @column.Source.Invoke(row)
+                                    <td style="@style" class="@className">
+                                        @column.Source.Invoke(item)
                                     </td>
                                 }
                                 else
                                 {
                                     RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
                                     <td style="@style" class="@className">
-                                        <CascadingValue Value="@row">
+                                        <CascadingValue Value="@item">
                                             @renderFragment
                                         </CascadingValue>
                                     </td>
                                 }
                             }
                         </tr>
+                        @if (row.Expanded)
+                        {
+                            <tr>
+                                <td colspan="200">
+                                    @row.Content
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
                 @if (Data.Length > 0 && ShowTableFooter)
@@ -126,14 +154,14 @@ else
 
 @if (Data.Length > 0 && IsPageable)
 {
-    <div class="container-fluid my-2">
+    <div class="container-fluid">
         <div class="float-left">
             <div class="my-1">
                 <label for="pagecount">@GridConfiguration.Default.ItemsPerPage</label>
-                <select id="pagecount" class="ml-2" @onchange="OnSelectPageSize">
+                <select id="pagecount" class="ml-2" @bind="ActivePageSize">
                     <option value="15">15</option>
                     <option value="30">30</option>
-                    <option value="50" selected="selected">50</option>
+                    <option value="50">50</option>
                     <option value="100">100</option>
                 </select>
             </div>
@@ -158,4 +186,6 @@ else
             </ul>
         </nav>
     </div>
+
+    <div style="clear:both"></div>
 }

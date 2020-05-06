@@ -49,6 +49,9 @@
         transform: scale(0.999);
     }
 
+.mg-pager-button {
+    user-select: none; /* Standard syntax */
+}
 
 /* From https://github.com/filamentgroup/select-css */
 

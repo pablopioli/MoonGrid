@@ -170,18 +170,19 @@ else
         <nav class="float-right my-1">
             <ul class="pagination">
                 <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
-                    <a class="page-link" tabindex="-1" aria-disabled="true" @onclick="MoveBack">
-                        <i class="far fa-chevron-double-left"></i>
-                        @GridConfiguration.Default.PreviousButtonText
-                    </a>
+                    <div class="page-link mg-pager-button" @onclick="MoveBack">
+                        <i class="fas fa-chevron-left mr-2"></i> @GridConfiguration.Default.PreviousButtonText
+                    </div>
                 </li>
                 <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                    <div class="page-link">
                         @(string.Format(GridConfiguration.Default.PageNumberText, QueryOptions.PageNumber))
-                    </a>
+                    </div>
                 </li>
                 <li class="page-item@(!HasMoreData ? " disabled" : "")">
-                    <a class="page-link" @onclick="MoveNext">@GridConfiguration.Default.NextButtonText <i class="far fa-chevron-double-right"></i></a>
+                    <div class="page-link mg-pager-button" @onclick="MoveNext">
+                        @GridConfiguration.Default.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
+                    </div>
                 </li>
             </ul>
         </nav>

@@ -35,7 +35,7 @@ namespace Sample
 
             var data = new List<Product>();
             FakeData = data;
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 300; i++)
             {
                 var product = new Product()
                 {

@@ -64,8 +64,8 @@ else
 {
     <div class="container-fluid my-2">
         <div class="table-responsive">
-            <table class="table table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "")" style="font-family:'Lato', sans-serif;">
-                <thead>
+            <table class="table table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+                <thead class="@HeaderClass">
                     <tr>
                         @if (Expandable)
                         {
@@ -92,11 +92,11 @@ else
                                 <td>
                                     @if (row.Expanded)
                                     {
-                                        <div class="upchevron" @onclick="@(() => ContractItem(row))"></div>
+                                        <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
                                     }
                                     else
                                     {
-                                        <div class="downchevron" @onclick="@(() => ExpandItem(row))"></div>
+                                        <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
                                     }
                                 </td>
                             }

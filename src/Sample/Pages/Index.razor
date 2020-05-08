@@ -1,93 +1,93 @@
 ﻿@page "/"
 @inject CurrieTechnologies.Razor.SweetAlert2.SweetAlertService Swal;
 
-    <div class="container-fluid mx-2">
-        <h2>First column freezed</h2>
-    </div>
+<div class="container-fluid mx-2">
+    <h2>First column freezed</h2>
+</div>
 
-    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
-                   OnNewItem="NewItem" ShowAddNewButton="true" AddNewButtonText="New Product"
-                   ShowFilterButton="true" EventCallbacks="@EventCallbacks"
-                   OrderOptions="OrderOptions" ActionButtons="Actions"
-                   FreezeFirstColumn="true">
-        <FilterTemplate>
-            <div class="form-inline">
-                @if (IsFilterActive)
-                {
-                    <input disabled type="text" class="form-control mb-2 mr-sm-2" id="filter-name-disabled" @bind="CategoryFilter">
+<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
+               OnNewItem="NewItem" ShowAddNewButton="true" AddNewButtonText="New Product"
+               ShowFilterButton="true" EventCallbacks="@EventCallbacks"
+               OrderOptions="OrderOptions" ActionButtons="Actions"
+               FreezeFirstColumn="true">
+    <FilterTemplate>
+        <div class="form-inline">
+            @if (IsFilterActive)
+            {
+                <input disabled type="text" class="form-control mb-2 mr-sm-2" id="filter-name-disabled" @bind="CategoryFilter">
 
-                    <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="RemoveFilter">
-                        <i class="fas fa-times" style="font-size: 1.2rem;"></i>
-                        <span style="font-size: 1rem;">Remove filter</span>
-                    </button>
-                }
-                else
-                {
-                    <input type="text" class="form-control mb-2 mr-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category">
+                <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="RemoveFilter">
+                    <i class="fas fa-times" style="font-size: 1.2rem;"></i>
+                    <span style="font-size: 1rem;">Remove filter</span>
+                </button>
+            }
+            else
+            {
+                <input type="text" class="form-control mb-2 mr-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category">
 
-                    <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="ApplyFilter">
-                        <i class="fas fa-check" style="font-size: 1.2rem;"></i>
-                        <span style="font-size: 1rem;">Apply</span>
-                    </button>
-                }
-            </div>
-        </FilterTemplate>
-    </MoonGrid.Grid>
+                <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="ApplyFilter">
+                    <i class="fas fa-check" style="font-size: 1.2rem;"></i>
+                    <span style="font-size: 1rem;">Apply</span>
+                </button>
+            }
+        </div>
+    </FilterTemplate>
+</MoonGrid.Grid>
 
-    <div class="container-fluid mx-2 mt-4">
-        <h2>With expander</h2>
-    </div>
+<div class="container-fluid mx-2 mt-4">
+    <h2>With expander</h2>
+</div>
 
-    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
-                   OnNewItem="NewItem" ShowAddNewButton="true" AddNewButtonText="New Product"
-                   ShowFilterButton="true" EventCallbacks="@EventCallbacks"
-                   OrderOptions="OrderOptions" ActionButtons="Actions"
-                   InitialPageSize="15"
-                   Expandable="true" ItemDetails="GetDetails">
-        <FilterTemplate>
-            <div class="form-inline">
-                @if (IsFilterActive)
-                {
-                    <input disabled type="text" class="form-control mb-2 mr-sm-2" id="filter-name-disabled" @bind="CategoryFilter">
+<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
+               OnNewItem="NewItem" ShowAddNewButton="true" AddNewButtonText="New Product"
+               ShowFilterButton="true" EventCallbacks="@EventCallbacks"
+               OrderOptions="OrderOptions" ActionButtons="Actions"
+               InitialPageSize="15" HeaderClass="thead-dark"
+               Expandable="true" ItemDetails="GetDetails">
+    <FilterTemplate>
+        <div class="form-inline">
+            @if (IsFilterActive)
+            {
+                <input disabled type="text" class="form-control mb-2 mr-sm-2" id="filter-name-disabled" @bind="CategoryFilter">
 
-                    <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="RemoveFilter">
-                        <i class="fas fa-times" style="font-size: 1.2rem;"></i>
-                        <span style="font-size: 1rem;">Remove filter</span>
-                    </button>
-                }
-                else
-                {
-                    <input type="text" class="form-control mb-2 mr-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category">
+                <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="RemoveFilter">
+                    <i class="fas fa-times" style="font-size: 1.2rem;"></i>
+                    <span style="font-size: 1rem;">Remove filter</span>
+                </button>
+            }
+            else
+            {
+                <input type="text" class="form-control mb-2 mr-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category">
 
-                    <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="ApplyFilter">
-                        <i class="fas fa-check" style="font-size: 1.2rem;"></i>
-                        <span style="font-size: 1rem;">Apply</span>
-                    </button>
-                }
-            </div>
-        </FilterTemplate>
-    </MoonGrid.Grid>
+                <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="ApplyFilter">
+                    <i class="fas fa-check" style="font-size: 1.2rem;"></i>
+                    <span style="font-size: 1rem;">Apply</span>
+                </button>
+            }
+        </div>
+    </FilterTemplate>
+</MoonGrid.Grid>
 
-    @code {
+@code {
 
-        public GridColumn<Product>[] Columns;
-        public bool IsFilterActive;
-        public string CategoryFilter;
-        public EventCallbacks EventCallbacks = new EventCallbacks();
-        public ICollection<OrderOption> OrderOptions = new List<OrderOption>
+    public GridColumn<Product>[] Columns;
+    public bool IsFilterActive;
+    public string CategoryFilter;
+    public EventCallbacks EventCallbacks = new EventCallbacks();
+    public ICollection<OrderOption> OrderOptions = new List<OrderOption>
 {
         new OrderOption("name", "Name"),
         new OrderOption("price", "Price")
     };
 
-        public List<ActionButton> Actions = new List<ActionButton>();
+    public List<ActionButton> Actions = new List<ActionButton>();
 
-        protected override void OnInitialized()
-        {
-            Actions.Add(new ActionButton("Some Action", async () => await Swal.FireAsync("Some action")));
-            Actions.Add(new ActionButton("Other Action", async () => await Swal.FireAsync("Other action")));
+    protected override void OnInitialized()
+    {
+        Actions.Add(new ActionButton("Some Action", async () => await Swal.FireAsync("Some action")));
+        Actions.Add(new ActionButton("Other Action", async () => await Swal.FireAsync("Other action")));
 
-            Columns = new[] {
+        Columns = new[] {
         new GridColumn<Product>("Name", x => x.Name, ColumnWidth.FromEm(30)),
         new GridColumn<Product>("Sku", x => x.Sku, ColumnWidth.FromEm(12)),
         new GridColumn<Product>("Category", x => x.Category),
@@ -102,72 +102,72 @@
             Template = typeof(Components.ContextMenuComponent)
         }
         };
-        }
-
-        public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)
-        {
-            // You generally do this in the server, send the query options via HttpClient
-            // Use sample data in this example
-            var data = Program.FakeData;
-
-            var result = new QueryResult<Product>();
-
-            IEnumerable<Product> filteredData = data;
-
-            if (IsFilterActive)
-            {
-                filteredData = data.Where(x => x.Category.StartsWith(CategoryFilter));
-            }
-
-            IOrderedEnumerable<Product> orderedData;
-
-            if (queryOptions.Order == "price")
-            {
-                orderedData = filteredData.OrderBy(x => x.Price);
-            }
-            else
-            {
-                orderedData = filteredData.OrderBy(x => x.Name);
-            }
-
-            var pagedData = orderedData.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
-
-            result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
-            result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
-            return Task.FromResult(result);
-        }
-
-        async Task NewItem()
-        {
-            await Swal.FireAsync("New product button clicked");
-        }
-
-        void RemoveFilter()
-        {
-            IsFilterActive = false;
-            EventCallbacks.RaiseFilterStatusChange(true);
-        }
-
-        void ApplyFilter()
-        {
-            if (string.IsNullOrEmpty(CategoryFilter))
-            {
-                return;
-            }
-
-            IsFilterActive = true;
-            EventCallbacks.RaiseFilterStatusChange(false);
-        }
-
-        Task<RenderFragment> GetDetails(Product product)
-        {
-            RenderFragment renderFragment = (builder) =>
-            {
-                builder.OpenComponent<Components.GridItemExpanded>(0);
-                builder.AddAttribute(1, "Product", product);
-                builder.CloseComponent();
-            };
-
-            return Task.FromResult(renderFragment);
-        }
     }
+
+    public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)
+    {
+        // You generally do this in the server, send the query options via HttpClient
+        // Use sample data in this example
+        var data = Program.FakeData;
+
+        var result = new QueryResult<Product>();
+
+        IEnumerable<Product> filteredData = data;
+
+        if (IsFilterActive)
+        {
+            filteredData = data.Where(x => x.Category.StartsWith(CategoryFilter));
+        }
+
+        IOrderedEnumerable<Product> orderedData;
+
+        if (queryOptions.Order == "price")
+        {
+            orderedData = filteredData.OrderBy(x => x.Price);
+        }
+        else
+        {
+            orderedData = filteredData.OrderBy(x => x.Name);
+        }
+
+        var pagedData = orderedData.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+
+        result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+        result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+        return Task.FromResult(result);
+    }
+
+    async Task NewItem()
+    {
+        await Swal.FireAsync("New product button clicked");
+    }
+
+    void RemoveFilter()
+    {
+        IsFilterActive = false;
+        EventCallbacks.RaiseFilterStatusChange(true);
+    }
+
+    void ApplyFilter()
+    {
+        if (string.IsNullOrEmpty(CategoryFilter))
+        {
+            return;
+        }
+
+        IsFilterActive = true;
+        EventCallbacks.RaiseFilterStatusChange(false);
+    }
+
+    Task<RenderFragment> GetDetails(Product product)
+    {
+        RenderFragment renderFragment = (builder) =>
+        {
+            builder.OpenComponent<Components.GridItemExpanded>(0);
+            builder.AddAttribute(1, "Product", product);
+            builder.CloseComponent();
+        };
+
+        return Task.FromResult(renderFragment);
+    }
+}

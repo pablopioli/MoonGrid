@@ -28,6 +28,8 @@ namespace MoonGrid
         [Parameter] public RenderFragment FilterTemplate { get; set; }
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
+        [Parameter] public string TableClass { get; set; } = "";
+        [Parameter] public string HeaderClass { get; set; } = "";
 
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
 
@@ -44,17 +46,7 @@ namespace MoonGrid
                 QueryOptions.PageSize = int.Parse(value);
                 QueryOptions.PageNumber = 1;
 
-                Dispatcher.CreateDefault().InvokeAsync(async () =>
-                {
-                    try
-                    {
-                        await UpdateCurrentData(true);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger?.LogError(ex.ToString());
-                    }
-                });
+                Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
             }
         }
 
@@ -116,13 +108,8 @@ namespace MoonGrid
             }
         }
 
-        private async Task UpdateCurrentData(bool ex = false)
+        private async Task UpdateCurrentData()
         {
-            if (ex)
-            {
-                throw new Exception();
-            }
-
             var result = await DataSource.Invoke(QueryOptions);
 
             if (result.ResultData == null)

@@ -68,6 +68,20 @@
     </FilterTemplate>
 </MoonGrid.Grid>
 
+<div class="container-fluid mx-2 mt-4">
+    <h2>With loading indicator</h2>
+</div>
+
+<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductDataSlow"
+               EventCallbacks="@EventCallbacks" OrderOptions="OrderOptions"
+               HeaderClass="thead-dark"
+               Expandable="true" ItemDetails="GetDetails">
+    <LoadingTemplate>
+        <p>Loading ...</p>
+    </LoadingTemplate>
+</MoonGrid.Grid>
+
+
 @code {
 
     public GridColumn<Product>[] Columns;
@@ -135,6 +149,36 @@
         result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
         result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
         return Task.FromResult(result);
+    }
+
+    public async Task<QueryResult<Product>> GetProductDataSlow(QueryOptions queryOptions)
+    {
+        // You generally do this in the server, send the query options via HttpClient
+        // Use sample data in this example
+        // We simulate a slow server here
+        var data = Program.FakeData;
+
+        var result = new QueryResult<Product>();
+
+        IOrderedEnumerable<Product> orderedData;
+
+        if (queryOptions.Order == "price")
+        {
+            orderedData = data.OrderBy(x => x.Price);
+        }
+        else
+        {
+            orderedData = data.OrderBy(x => x.Name);
+        }
+
+        var pagedData = orderedData.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+
+        result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+        result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+
+        await Task.Delay(1500);
+
+        return result;
     }
 
     async Task NewItem()

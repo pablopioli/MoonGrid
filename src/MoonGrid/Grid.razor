@@ -14,7 +14,7 @@
         {
             <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
                 <span class="mr-1">@GridConfiguration.Default.OrderByText</span>
-                <select id="pagecount" class="select-css select-buttonheight mr-md-2" @onchange="OnSelectOrder">
+                <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
                     @foreach (var item in OrderOptions)
                     {
                         <option value="@item.Id">@item.DisplayText</option>
@@ -82,70 +82,77 @@ else
                         }
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var row in Data)
-                    {
-                        var item = row.Item;
-                        <tr>
-                            @if (Expandable)
-                            {
-                                <td>
-                                    @if (row.Expanded)
+                @if (Loading)
+                {
+                    @LoadingTemplate
+                }
+                else
+                {
+                    <tbody>
+                        @foreach (var row in Data)
+                        {
+                            var item = row.Item;
+                            <tr>
+                                @if (Expandable)
+                                {
+                                    <td>
+                                        @if (row.Expanded)
+                                        {
+                                            <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
+                                        }
+                                    </td>
+                                }
+
+                                @foreach (var column in Columns)
+                                {
+                                    var style = ComputeStyle(column);
+                                    var className = ComputeClass(column);
+                                    @if (column.Template == null)
                                     {
-                                        <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                        <td style="@style" class="@className">
+                                            @column.Source.Invoke(item)
+                                        </td>
                                     }
                                     else
                                     {
-                                        <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
+                                        RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
+                                        <td style="@style" class="@className">
+                                            <CascadingValue Value="@item">
+                                                @renderFragment
+                                            </CascadingValue>
+                                        </td>
                                     }
-                                </td>
-                            }
-
-                            @foreach (var column in Columns)
-                            {
-                                var style = ComputeStyle(column);
-                                var className = ComputeClass(column);
-                                @if (column.Template == null)
-                                {
-                                    <td style="@style" class="@className">
-                                        @column.Source.Invoke(item)
-                                    </td>
                                 }
-                                else
-                                {
-                                    RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
-                                    <td style="@style" class="@className">
-                                        <CascadingValue Value="@item">
-                                            @renderFragment
-                                        </CascadingValue>
-                                    </td>
-                                }
-                            }
-                        </tr>
-                        @if (row.Expanded)
-                        {
-                            <tr>
-                                <td colspan="200">
-                                    @row.Content
-                                </td>
                             </tr>
-                        }
-                    }
-                </tbody>
-                @if (Data.Length > 0 && ShowTableFooter)
-                {
-                    <tfoot>
-                        <tr>
-                            @foreach (var column in Columns)
+                            @if (row.Expanded)
                             {
-                                var style = ComputeStyle(column);
-                                var className = ComputeClass(column);
-                                <th style="@style" class="@className">
-                                    @column.Title
-                                </th>
+                                <tr>
+                                    <td colspan="200">
+                                        @row.Content
+                                    </td>
+                                </tr>
                             }
-                        </tr>
-                    </tfoot>
+                        }
+                    </tbody>
+                    @if (Data.Length > 0 && ShowTableFooter)
+                    {
+                        <tfoot>
+                            <tr>
+                                @foreach (var column in Columns)
+                                {
+                                    var style = ComputeStyle(column);
+                                    var className = ComputeClass(column);
+                                    <th style="@style" class="@className">
+                                        @column.Title
+                                    </th>
+                                }
+                            </tr>
+                        </tfoot>
+                    }
                 }
             </table>
         </div>

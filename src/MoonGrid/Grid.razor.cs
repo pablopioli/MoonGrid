@@ -27,6 +27,7 @@ namespace MoonGrid
         [Parameter] public Func<TItem, Task<RenderFragment>> ItemDetails { get; set; }
         [Parameter] public RenderFragment FilterTemplate { get; set; }
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
+        [Parameter] public RenderFragment LoadingTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
@@ -35,8 +36,9 @@ namespace MoonGrid
 
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
         private QueryOptions QueryOptions { get; set; } = new QueryOptions();
-        public bool HasMoreData { get; private set; }
-        public bool IsFilterActive { get; private set; }
+        private bool HasMoreData { get; set; }
+        private bool IsFilterActive { get; set; }
+        private bool Loading { get; set; }
 
         public string ActivePageSize
         {
@@ -110,6 +112,12 @@ namespace MoonGrid
 
         private async Task UpdateCurrentData()
         {
+            if (LoadingTemplate != null)
+            {
+                Loading = true;
+                StateHasChanged();
+            }
+
             var result = await DataSource.Invoke(QueryOptions);
 
             if (result.ResultData == null)
@@ -122,6 +130,12 @@ namespace MoonGrid
             }
 
             HasMoreData = result.HasMoreData;
+
+            if (LoadingTemplate != null)
+            {
+                Loading = false;
+            }
+
             StateHasChanged();
         }
 
@@ -204,8 +218,6 @@ namespace MoonGrid
                     return "rem";
                 case WidthUnit.Em:
                     return "em";
-                default:
-                    break;
             }
 
             return string.Empty;

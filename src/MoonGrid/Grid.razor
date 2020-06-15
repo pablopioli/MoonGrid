@@ -54,7 +54,7 @@
     }
 </div>
 
-@if (Data.Length == 0 && NoDataTemplate != null)
+@if (Data.Length == 0 && !Loading && NoDataTemplate != null)
 {
     <div class="container-fluid my-2 float-left">
         @NoDataTemplate

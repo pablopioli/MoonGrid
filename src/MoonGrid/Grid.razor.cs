@@ -129,6 +129,11 @@ namespace MoonGrid
 
         private async Task UpdateCurrentData()
         {
+            if (DataSource == null)
+            {
+                return;
+            }
+
             if (LoadingTemplate != null)
             {
                 Loading = true;

@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MoonGrid
 {
     public class QueryResult<T>
     {
-        public ICollection<T> ResultData { get; set; }
+        public ICollection<T> ResultData { get; set; } = Array.Empty<T>();
         public bool HasMoreData { get; set; }
 
         public QueryResult()

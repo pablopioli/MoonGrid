@@ -81,6 +81,19 @@
     </LoadingTemplate>
 </MoonGrid.Grid>
 
+<div class="container-fluid mx-2 mt-4">
+    <h2>Provide all data on load</h2>
+</div>
+
+<MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="ProvideData"
+               EventCallbacks="@EventCallbacks" OrderOptions="OrderOptions"
+               HeaderClass="thead-dark"
+               Expandable="true" ItemDetails="GetDetails">
+    <LoadingTemplate>
+        <p>Loading ...</p>
+    </LoadingTemplate>
+</MoonGrid.Grid>
+
 
 @code {
 
@@ -88,10 +101,12 @@
     public bool IsFilterActive;
     public string CategoryFilter;
     public EventCallbacks EventCallbacks = new EventCallbacks();
+    private Grid<Product> ProvideData;
+
     public ICollection<OrderOption> OrderOptions = new List<OrderOption>
 {
-        new OrderOption("name", "Name"),
-        new OrderOption("price", "Price")
+        new OrderOption<Product>("name", "Name", (x) => x.OrderBy(x => x.Name)),
+        new OrderOption<Product>("price", "Price", (x) => x.OrderBy(x => x.Price))
     };
 
     public List<ActionButton> Actions = new List<ActionButton>();
@@ -116,6 +131,14 @@
             Template = typeof(Components.ContextMenuComponent)
         }
         };
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ProvideData.SetData(Program.FakeData);
+        }
     }
 
     public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)

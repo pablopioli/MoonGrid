@@ -1,0 +1,14 @@
+[
+  {
+    "outputFileName": "wwwroot/styles.min.css",
+    "inputFiles": [
+      "wwwroot/styles.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/moongrid.min.js",
+    "inputFiles": [
+      "wwwroot/moongrid.js"
+    ]
+  }
+]

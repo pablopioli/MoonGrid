@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,13 +34,17 @@ namespace MoonGrid
         [Parameter] public string HeaderClass { get; set; } = "";
 
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
+        [Inject] private IJSRuntime JSRuntime { get; set; }
 
+        private string Id = Guid.NewGuid().ToString().Replace("-", "");
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
+        private TItem[] FixedData { get; set; } = Array.Empty<TItem>();
         private QueryOptions QueryOptions { get; set; } = new QueryOptions();
         private bool HasMoreData { get; set; }
         private bool IsFilterActive { get; set; }
         private bool Loading { get; set; }
 
+        private string AnchorToScroll;
         public string ActivePageSize
         {
             get { return QueryOptions.PageSize.ToString(); }
@@ -48,7 +53,11 @@ namespace MoonGrid
                 QueryOptions.PageSize = int.Parse(value);
                 QueryOptions.PageNumber = 1;
 
-                Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
+                Dispatcher.CreateDefault().InvokeAsync(async () =>
+                {
+                    await UpdateCurrentData();
+                    AnchorToScroll = Id + "-pager";
+                });
             }
         }
 
@@ -108,6 +117,14 @@ namespace MoonGrid
 
                 await UpdateCurrentData();
             }
+            else
+            {
+                if (!string.IsNullOrEmpty(AnchorToScroll))
+                {
+                    await JSRuntime.InvokeVoidAsync("goToAnchorBottom", AnchorToScroll);
+                    AnchorToScroll = null;
+                }
+            }
         }
 
         private async Task UpdateCurrentData()
@@ -151,6 +168,7 @@ namespace MoonGrid
             {
                 QueryOptions.PageNumber--;
                 await UpdateCurrentData();
+                await JSRuntime.InvokeVoidAsync("goToAnchor", Id);
             }
         }
 
@@ -160,6 +178,7 @@ namespace MoonGrid
             {
                 QueryOptions.PageNumber++;
                 await UpdateCurrentData();
+                await JSRuntime.InvokeVoidAsync("goToAnchor", Id);
             }
         }
 
@@ -235,6 +254,46 @@ namespace MoonGrid
         private void ContractItem(DisplayableItem<TItem> item)
         {
             item.Expanded = false;
+        }
+
+        public void SetData(IEnumerable<TItem> data)
+        {
+            FixedData = data.ToArray();
+            DataSource = InternalDataSource;
+        }
+
+        private Task<QueryResult<TItem>> InternalDataSource(QueryOptions queryOptions)
+        {
+            var result = new QueryResult<TItem>();
+
+            var orderOption = OrderOptions.Where(x => x.Id == queryOptions.Order).FirstOrDefault();
+
+            Func<IEnumerable<TItem>, IOrderedEnumerable<TItem>> orderFunction = null;
+            if (orderOption != null)
+            {
+                var genericOrderOption = orderOption as OrderOption<TItem>;
+                if (genericOrderOption != null)
+                {
+                    orderFunction = genericOrderOption.OrderFunction;
+                }
+            }
+
+            IEnumerable<TItem> orderedData;
+            if (orderFunction != null)
+            {
+                orderedData = orderFunction.Invoke(FixedData);
+            }
+            else
+            {
+                orderedData = FixedData;
+            }
+
+            var pagedData = orderedData.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+
+            result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+            result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+
+            return Task.FromResult(result);
         }
 
         private bool hasDisposed;

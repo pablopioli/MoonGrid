@@ -265,6 +265,11 @@ namespace MoonGrid
         {
             FixedData = data.ToArray();
             DataSource = InternalDataSource;
+
+            Dispatcher.CreateDefault().InvokeAsync(async () =>
+            {
+                await UpdateCurrentData();
+            });
         }
 
         private Task<QueryResult<TItem>> InternalDataSource(QueryOptions queryOptions)

@@ -123,9 +123,10 @@
         new GridColumn<Product>("Price", x => x.Price.ToString("C2"),
                                          ColumnWidth.FromEm(10),
                                          alignment:ColumnAlignment.Right),
-        new GridColumn<Product>("Stock", x => x.Price.ToString("N0"),
+        new GridColumn<Product>("Stock", x => x.Stock.ToString("N0"),
                                          ColumnWidth.FromEm(10),
-                                         alignment:ColumnAlignment.Right),
+                                         alignment:ColumnAlignment.Right,
+                                         dynamicStyle: (Product x) => x.Stock < 100 ? "color:red;" : "" ),
         new GridColumn<Product>("", x => "", ColumnWidth.FromEm(2))
         {
             Template = typeof(Components.ContextMenuComponent)

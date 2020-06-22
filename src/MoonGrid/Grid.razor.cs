@@ -197,7 +197,7 @@ namespace MoonGrid
             await UpdateCurrentData();
         }
 
-        public string ComputeStyle(GridColumn<TItem> column)
+        public string ComputeHeaderStyle(GridColumn<TItem> column)
         {
             var style = new StringBuilder();
 
@@ -209,6 +209,32 @@ namespace MoonGrid
             if (column.MaxWidth != null)
             {
                 style.Append($"max-width:{column.MaxWidth.Width}{GridUnitToText(column.MaxWidth.Unit)};");
+            }
+
+            return style.ToString();
+        }
+
+        public string ComputeStyle(GridColumn<TItem> column, TItem value)
+        {
+            var style = new StringBuilder();
+
+            if (column.MinWidth != null)
+            {
+                style.Append($"min-width:{column.MinWidth.Width}{GridUnitToText(column.MinWidth.Unit)};");
+            }
+
+            if (column.MaxWidth != null)
+            {
+                style.Append($"max-width:{column.MaxWidth.Width}{GridUnitToText(column.MaxWidth.Unit)};");
+            }
+
+            if (column.DynamicStyle != null && value != null)
+            {
+                var dynamicStyle = column.DynamicStyle(value);
+                if (dynamicStyle != null)
+                {
+                    style.Append(dynamicStyle);
+                }
             }
 
             return style.ToString();

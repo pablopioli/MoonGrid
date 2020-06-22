@@ -74,7 +74,7 @@ else
 
                         @foreach (var column in Columns)
                         {
-                            var style = ComputeStyle(column);
+                            var style = ComputeHeaderStyle(column);
                             var className = ComputeClass(column);
                             <th style="@style" class="@className">
                                 @column.Title
@@ -109,7 +109,7 @@ else
 
                                 @foreach (var column in Columns)
                                 {
-                                    var style = ComputeStyle(column);
+                                    var style = ComputeStyle(column, item);
                                     var className = ComputeClass(column);
                                     @if (column.Template == null)
                                     {
@@ -144,7 +144,7 @@ else
                             <tr>
                                 @foreach (var column in Columns)
                                 {
-                                    var style = ComputeStyle(column);
+                                    var style = ComputeHeaderStyle(column);
                                     var className = ComputeClass(column);
                                     <th style="@style" class="@className">
                                         @column.Title

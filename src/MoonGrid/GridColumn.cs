@@ -11,6 +11,7 @@ namespace MoonGrid
         public ColumnAlignment Alignment { get; set; } = ColumnAlignment.Left;
         public ColumnWidth MinWidth { get; set; }
         public ColumnWidth MaxWidth { get; set; }
+        public Func<T, string> DynamicStyle { get; set; }
 
         public GridColumn()
         { }
@@ -21,12 +22,16 @@ namespace MoonGrid
             Source = source;
         }
 
-        public GridColumn(string title, Func<T, string> source, ColumnWidth minWidth,
-            ColumnWidth maxWidth = null, ColumnAlignment alignment = ColumnAlignment.Left)
+        public GridColumn(string title,
+            Func<T, string> source, ColumnWidth minWidth,
+            ColumnWidth maxWidth = null,
+            ColumnAlignment alignment = ColumnAlignment.Left,
+            Func<T, string> dynamicStyle = null)
         {
             Title = title;
             Source = source;
             MinWidth = minWidth;
+            DynamicStyle = dynamicStyle;
 
             if (maxWidth != null)
             {

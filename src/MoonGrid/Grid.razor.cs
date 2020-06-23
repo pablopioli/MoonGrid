@@ -32,6 +32,7 @@ namespace MoonGrid
         [Parameter] public int InitialPageSize { get; set; } = 30;
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
+        [Parameter] public bool UseResponsiveGrid { get; set; } = true;
 
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
         [Inject] private IJSRuntime JSRuntime { get; set; }

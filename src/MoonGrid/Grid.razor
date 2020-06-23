@@ -4,55 +4,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
 <div class="container-fluid" id="@Id">
-    <div class="float-md-left">
-        @if (ShowAddNewButton)
-        {
-            <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated">@AddNewButtonText</button>
-        }
+    <div class="row">
+        <div class="col-auto">
+            @if (ShowAddNewButton)
+            {
+                <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated">@AddNewButtonText</button>
+            }
 
-        @if (OrderOptions.Count() > 0)
-        {
-            <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
-                <span class="mr-1">@GridConfiguration.Default.OrderByText</span>
-                <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
-                    @foreach (var item in OrderOptions)
+            @if (OrderOptions.Count() > 0)
+            {
+                <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
+                    <span class="mr-1">@GridConfiguration.Default.OrderByText</span>
+                    <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
+                        @foreach (var item in OrderOptions)
+                        {
+                            <option value="@item.Id">@item.DisplayText</option>
+                        }
+                    </select>
+                </span>
+            }
+
+            @if (ShowFilterButton)
+            {
+                <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
+                    @if (IsFilterActive)
                     {
-                        <option value="@item.Id">@item.DisplayText</option>
+                        <i class="@GridConfiguration.Default.FilterEnabledIcon"></i>
                     }
-                </select>
-            </span>
-        }
+                    else
+                    {
+                        <i class="@GridConfiguration.Default.FilterDisabledIcon"></i>
+                    }
+                    @GridConfiguration.Default.FilterButtonText
+                </button>
 
-        @if (ShowFilterButton)
+                <div id="grid-filter" class="collapse my-2">
+                    @FilterTemplate
+                </div>
+            }
+        </div>
+
+        @if (ActionButtons.Count > 0)
         {
-            <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
-                @if (IsFilterActive)
+            <div class="col text-md-right">
+                @foreach (var action in ActionButtons)
                 {
-                    <i class="@GridConfiguration.Default.FilterEnabledIcon"></i>
+                    <button type="button" class="btn btn-secondary my-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
                 }
-                else
-                {
-                    <i class="@GridConfiguration.Default.FilterDisabledIcon"></i>
-                }
-                @GridConfiguration.Default.FilterButtonText
-            </button>
-
-            <div id="grid-filter" class="collapse my-2">
-                @FilterTemplate
             </div>
         }
     </div>
-
-    @if (ActionButtons.Count > 0)
-    {
-        <div class="float-md-right">
-            @foreach (var action in ActionButtons)
-            {
-                <button type="button" class="btn btn-secondary my-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
-            }
-        </div>
-    }
 </div>
+
 
 @if (Data.Length == 0 && !Loading && NoDataTemplate != null)
 {
@@ -63,8 +66,8 @@
 else
 {
     <div class="container-fluid my-2">
-        <div class="table-responsive">
-            <table class="table table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+        <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
+            <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
                 <thead class="@HeaderClass">
                     <tr>
                         @if (Expandable)
@@ -161,38 +164,38 @@ else
 
 @if (Data.Length > 0 && IsPageable)
 {
-    <div class="container-fluid">
-        <div class="float-left">
-            <div class="my-1">
+    <div class="container-fluid my-1">
+        <div class="row">
+            <div class="col-auto">
                 <label for="pagecount">@GridConfiguration.Default.ItemsPerPage</label>
-                <select id="pagecount" class="ml-2" @bind="ActivePageSize">
+                <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
                     <option value="15">15</option>
                     <option value="30">30</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
                 </select>
             </div>
-        </div>
 
-        <nav class="float-right my-1">
-            <ul class="pagination">
-                <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
-                    <div class="page-link mg-pager-button" @onclick="MoveBack">
-                        <i class="fas fa-chevron-left mr-2"></i> @GridConfiguration.Default.PreviousButtonText
-                    </div>
-                </li>
-                <li class="page-item disabled">
-                    <div class="page-link">
-                        @(string.Format(GridConfiguration.Default.PageNumberText, QueryOptions.PageNumber))
-                    </div>
-                </li>
-                <li class="page-item@(!HasMoreData ? " disabled" : "")">
-                    <div class="page-link mg-pager-button" @onclick="MoveNext">
-                        @GridConfiguration.Default.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
-                    </div>
-                </li>
-            </ul>
-        </nav>
+            <div class="col-sm">
+                <ul class="pagination justify-content-md-end mt-2 mt-sm-0">
+                    <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
+                        <div class="page-link mg-pager-button text-nowrap" @onclick="MoveBack">
+                            <i class="fas fa-chevron-left mr-2"></i> @GridConfiguration.Default.PreviousButtonText
+                        </div>
+                    </li>
+                    <li class="page-item disabled">
+                        <div class="page-link text-nowrap">
+                            @(string.Format(GridConfiguration.Default.PageNumberText, QueryOptions.PageNumber))
+                        </div>
+                    </li>
+                    <li class="page-item@(!HasMoreData ? " disabled" : "")">
+                        <div class="page-link mg-pager-button text-nowrap" @onclick="MoveNext">
+                            @GridConfiguration.Default.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div style="clear:both" id="@Id-pager"></div>

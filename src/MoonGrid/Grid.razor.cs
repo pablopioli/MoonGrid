@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -34,7 +33,6 @@ namespace MoonGrid
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
 
-        [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
         [Inject] private IJSRuntime JSRuntime { get; set; }
 
         private string Id = Guid.NewGuid().ToString().Replace("-", "");
@@ -193,6 +191,11 @@ namespace MoonGrid
             actionButton.Action.Invoke();
         }
 
+        public void NotifyStateHasChanged()
+        {
+            StateHasChanged();
+        }
+
         public async Task Refresh()
         {
             await UpdateCurrentData();
@@ -293,10 +296,23 @@ namespace MoonGrid
             FixedData = data.ToArray();
             DataSource = InternalDataSource;
 
-            Dispatcher.CreateDefault().InvokeAsync(async () =>
+            Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
+        }
+
+        public void UpdateItem(TItem item)
+        {
+            var indexF = Array.IndexOf(FixedData, item);
+            var indexD = Array.IndexOf(Data, item);
+
+            if (indexF == -1 || indexD == -1)
             {
-                await UpdateCurrentData();
-            });
+                return;
+            }
+
+            FixedData[indexF] = item;
+            Data[indexD].Key = Guid.NewGuid().ToString();
+
+            StateHasChanged();
         }
 
         private Task<QueryResult<TItem>> InternalDataSource(QueryOptions queryOptions)

@@ -95,7 +95,7 @@ else
                         @foreach (var row in Data)
                         {
                             var item = row.Item;
-                            <tr>
+                            <tr @key="row.Key">
                                 @if (Expandable)
                                 {
                                     <td>

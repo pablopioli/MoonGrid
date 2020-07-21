@@ -7,7 +7,7 @@ namespace MoonGrid
     {
         public TItem Item { get; set; }
         public bool Expanded { get; set; }
-        public string Key { get; set; } = Guid.NewGuid().ToString();
+        public Guid Key { get; set; } = Guid.NewGuid();
         public RenderFragment Content { get; set; }
 
         public DisplayableItem(TItem item)

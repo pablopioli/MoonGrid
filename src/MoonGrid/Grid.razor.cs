@@ -299,20 +299,31 @@ namespace MoonGrid
             Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
         }
 
-        public void UpdateItem(TItem item)
+        public bool UpdateItem(TItem item)
         {
             var indexF = Array.IndexOf(FixedData, item);
-            var indexD = Array.IndexOf(Data, item);
+
+            var indexD = -1;
+            for (int i = 0; i < Data.Length; i++)
+            {
+                if (ReferenceEquals(Data[i].Item, item))
+                {
+                    indexD = i;
+                    break;
+                }
+            }
 
             if (indexF == -1 || indexD == -1)
             {
-                return;
+                return false;
             }
 
             FixedData[indexF] = item;
-            Data[indexD].Key = Guid.NewGuid().ToString();
+            Data[indexD].Key = Guid.NewGuid();
 
             StateHasChanged();
+
+            return true;
         }
 
         private Task<QueryResult<TItem>> InternalDataSource(QueryOptions queryOptions)

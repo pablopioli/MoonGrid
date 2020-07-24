@@ -89,7 +89,7 @@ else
                 {
                     @LoadingTemplate
                 }
-                else
+                else if (string.IsNullOrEmpty(ErrorText))
                 {
                     <tbody>
                         @foreach (var row in Data)
@@ -160,6 +160,20 @@ else
                 }
             </table>
         </div>
+
+        @if (!string.IsNullOrEmpty(ErrorText))
+        {
+            @if (ErrorTemplate == null)
+            {
+                <p class="text-danger text-center">@ErrorText</p>
+            }
+            else
+            {
+                <CascadingValue Value="@ErrorText">
+                    @ErrorTemplate
+                </CascadingValue>
+            }
+        }
     </div>
 }
 

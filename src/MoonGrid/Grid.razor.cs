@@ -28,12 +28,15 @@ namespace MoonGrid
         [Parameter] public RenderFragment FilterTemplate { get; set; }
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
         [Parameter] public RenderFragment LoadingTemplate { get; set; }
+        [Parameter] public RenderFragment ErrorTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
+
+        public string ErrorText { get; private set; }
 
         private string Id = Guid.NewGuid().ToString().Replace("-", "");
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
@@ -140,17 +143,26 @@ namespace MoonGrid
             }
 
             var result = await DataSource.Invoke(QueryOptions);
+            ErrorText = result.Error;
 
-            if (result.ResultData == null)
+            if (!string.IsNullOrEmpty(ErrorText))
             {
                 Data = Array.Empty<DisplayableItem<TItem>>();
+                HasMoreData = false;
             }
             else
             {
-                Data = result.ResultData.Select(x => new DisplayableItem<TItem>(x)).ToArray();
-            }
+                if (result.ResultData == null)
+                {
+                    Data = Array.Empty<DisplayableItem<TItem>>();
+                }
+                else
+                {
+                    Data = result.ResultData.Select(x => new DisplayableItem<TItem>(x)).ToArray();
+                }
 
-            HasMoreData = result.HasMoreData;
+                HasMoreData = result.HasMoreData;
+            }
 
             if (LoadingTemplate != null)
             {

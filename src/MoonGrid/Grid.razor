@@ -3,215 +3,228 @@
 <link href="_content/MoonGrid/styles.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
-<div class="container-fluid" id="@Id">
-    <div class="row">
-        <div class="col-auto">
-            @if (ShowAddNewButton)
-            {
-                <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated">@AddNewButtonText</button>
-            }
-
-            @if (OrderOptions.Count() > 0)
-            {
-                <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
-                    <span class="mr-1">@Localization.OrderByText</span>
-                    <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
-                        @foreach (var item in OrderOptions)
-                        {
-                            <option value="@item.Id">@item.DisplayText</option>
-                        }
-                    </select>
-                </span>
-            }
-
-            @if (ShowFilterButton)
-            {
-                <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
-                    @if (IsFilterActive)
-                    {
-                        <i class="@Localization.FilterEnabledIcon"></i>
-                    }
-                    else
-                    {
-                        <i class="@Localization.FilterDisabledIcon"></i>
-                    }
-                    @Localization.FilterButtonText
-                </button>
-
-                <div id="grid-filter" class="collapse my-2">
-                    @FilterTemplate
-                </div>
-            }
-        </div>
-
-        @if (ActionButtons.Count > 0)
-        {
-            <div class="col text-md-right">
-                @foreach (var action in ActionButtons)
-                {
-                    <button type="button" class="btn btn-secondary my-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
-                }
-            </div>
-        }
-    </div>
-</div>
-
-
-@if (Data.Length == 0 && !Loading && NoDataTemplate != null)
+@if (IsInDetailMode)
 {
-    <div class="container-fluid my-2 float-left">
-        @NoDataTemplate
-    </div>
+    <CascadingValue Value="CurrentRow">
+        <CascadingValue Value="ActionLauncher">
+            @DetailsTemplate
+        </CascadingValue>
+    </CascadingValue>
 }
 else
 {
-    <div class="container-fluid my-2">
-        <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-            <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
-                <thead class="@HeaderClass">
-                    <tr>
-                        @if (Expandable)
-                        {
-                            <th></th>
-                        }
-
-                        @foreach (var column in Columns)
-                        {
-                            var style = ComputeHeaderStyle(column);
-                            var className = ComputeClass(column);
-                            <th style="@style" class="@className">
-                                @column.Title
-                            </th>
-                        }
-                    </tr>
-                </thead>
-                @if (Loading)
+    <div class="container-fluid" id="@Id">
+        <div class="row">
+            <div class="col-auto">
+                @if (ShowAddNewButton)
                 {
-                    @LoadingTemplate
+                    <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated">@AddNewButtonText</button>
                 }
-                else if (string.IsNullOrEmpty(ErrorText))
+
+                @if (OrderOptions.Count() > 0)
                 {
-                    <tbody>
-                        @foreach (var row in Data)
+                    <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
+                        <span class="mr-1">@Localization.OrderByText</span>
+                        <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
+                            @foreach (var item in OrderOptions)
+                            {
+                                <option value="@item.Id">@item.DisplayText</option>
+                            }
+                        </select>
+                    </span>
+                }
+
+                @if (ShowFilterButton)
+                {
+                    <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
+                        @if (IsFilterActive)
                         {
-                            var item = row.Item;
-                            var key = row.Key;
-                            <tr @key=key>
-                                @if (Expandable)
-                                {
-                                    <td>
-                                        @if (row.Expanded)
+                            <i class="@Localization.FilterEnabledIcon"></i>
+                        }
+                        else
+                        {
+                            <i class="@Localization.FilterDisabledIcon"></i>
+                        }
+                        @Localization.FilterButtonText
+                    </button>
+
+                    <div id="grid-filter" class="collapse my-2">
+                        @FilterTemplate
+                    </div>
+                }
+            </div>
+
+            @if (ActionButtons.Count > 0)
+            {
+                <div class="col text-md-right">
+                    @foreach (var action in ActionButtons)
+                    {
+                        <button type="button" class="btn btn-secondary my-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+
+    @if (Data.Length == 0 && !Loading && NoDataTemplate != null)
+    {
+        <div class="container-fluid my-2 float-left">
+            @NoDataTemplate
+        </div>
+    }
+    else
+    {
+        <div class="container-fluid my-2">
+            <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
+                <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+                    <thead class="@HeaderClass">
+                        <tr>
+                            @if (Expandable)
+                            {
+                                <th></th>
+                            }
+
+                            @foreach (var column in Columns)
+                            {
+                                var style = ComputeHeaderStyle(column);
+                                var className = ComputeClass(column);
+                                <th style="@style" class="@className">
+                                    @column.Title
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    @if (Loading)
+                    {
+                        @LoadingTemplate
+                    }
+                    else if (string.IsNullOrEmpty(ErrorText))
+                    {
+                        <tbody>
+                            @foreach (var row in Data)
+                            {
+                                var item = row.Item;
+                                var key = row.Key;
+                                <tr @key=key>
+                                    @if (Expandable)
+                                    {
+                                        <td>
+                                            @if (row.Expanded)
+                                            {
+                                                <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
+                                            }
+                                        </td>
+                                    }
+
+                                    @foreach (var column in Columns)
+                                    {
+                                        var style = ComputeStyle(column, item);
+                                        var className = ComputeClass(column);
+                                        @if (column.Template == null)
                                         {
-                                            <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                            <td style="@style" class="@className">
+                                                @column.Source.Invoke(item)
+                                            </td>
                                         }
                                         else
                                         {
-                                            <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
+                                            RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
+                                            <td style="@style" class="@className">
+                                                <CascadingValue Value="@item">
+                                                    <CascadingValue Value="ActionLauncher">
+                                                        @renderFragment
+                                                    </CascadingValue>
+                                                </CascadingValue>
+                                            </td>
                                         }
-                                    </td>
-                                }
-
-                                @foreach (var column in Columns)
-                                {
-                                    var style = ComputeStyle(column, item);
-                                    var className = ComputeClass(column);
-                                    @if (column.Template == null)
-                                    {
-                                        <td style="@style" class="@className">
-                                            @column.Source.Invoke(item)
-                                        </td>
                                     }
-                                    else
-                                    {
-                                        RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
-                                        <td style="@style" class="@className">
-                                            <CascadingValue Value="@item">
-                                                @renderFragment
-                                            </CascadingValue>
-                                        </td>
-                                    }
-                                }
-                            </tr>
-                            @if (row.Expanded)
-                            {
-                                <tr>
-                                    <td colspan="200">
-                                        @row.Content
-                                    </td>
                                 </tr>
-                            }
-                        }
-                    </tbody>
-                    @if (Data.Length > 0 && ShowTableFooter)
-                    {
-                        <tfoot>
-                            <tr>
-                                @foreach (var column in Columns)
+                                @if (row.Expanded)
                                 {
-                                    var style = ComputeHeaderStyle(column);
-                                    var className = ComputeClass(column);
-                                    <th style="@style" class="@className">
-                                        @column.Title
-                                    </th>
+                                    <tr>
+                                        <td colspan="200">
+                                            @row.Content
+                                        </td>
+                                    </tr>
                                 }
-                            </tr>
-                        </tfoot>
+                            }
+                        </tbody>
+                        @if (Data.Length > 0 && ShowTableFooter)
+                        {
+                            <tfoot>
+                                <tr>
+                                    @foreach (var column in Columns)
+                                    {
+                                        var style = ComputeHeaderStyle(column);
+                                        var className = ComputeClass(column);
+                                        <th style="@style" class="@className">
+                                            @column.Title
+                                        </th>
+                                    }
+                                </tr>
+                            </tfoot>
+                        }
                     }
+                </table>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ErrorText))
+            {
+                @if (ErrorTemplate == null)
+                {
+                    <p class="text-danger text-center">@ErrorText</p>
                 }
-            </table>
+                else
+                {
+                    <CascadingValue Value="@ErrorText">
+                        @ErrorTemplate
+                    </CascadingValue>
+                }
+            }
         </div>
+    }
 
-        @if (!string.IsNullOrEmpty(ErrorText))
-        {
-            @if (ErrorTemplate == null)
-            {
-                <p class="text-danger text-center">@ErrorText</p>
-            }
-            else
-            {
-                <CascadingValue Value="@ErrorText">
-                    @ErrorTemplate
-                </CascadingValue>
-            }
-        }
-    </div>
-}
+    @if (Data.Length > 0 && IsPageable)
+    {
+        <div class="container-fluid my-1">
+            <div class="row">
+                <div class="col-auto">
+                    <label for="pagecount">@Localization.ItemsPerPage</label>
+                    <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
 
-@if (Data.Length > 0 && IsPageable)
-{
-    <div class="container-fluid my-1">
-        <div class="row">
-            <div class="col-auto">
-                <label for="pagecount">@Localization.ItemsPerPage</label>
-                <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
-                    <option value="15">15</option>
-                    <option value="30">30</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
-
-            <div class="col-sm">
-                <ul class="pagination justify-content-md-end mt-2 mt-sm-0">
-                    <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
-                        <div class="page-link mg-pager-button text-nowrap" @onclick="MoveBack">
-                            <i class="fas fa-chevron-left mr-2"></i> @Localization.PreviousButtonText
-                        </div>
-                    </li>
-                    <li class="page-item disabled">
-                        <div class="page-link text-nowrap">
-                            @(string.Format(Localization.PageNumberText, QueryOptions.PageNumber))
-                        </div>
-                    </li>
-                    <li class="page-item@(!HasMoreData ? " disabled" : "")">
-                        <div class="page-link mg-pager-button text-nowrap" @onclick="MoveNext">
-                            @Localization.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
-                        </div>
-                    </li>
-                </ul>
+                <div class="col-sm">
+                    <ul class="pagination justify-content-md-end mt-2 mt-sm-0">
+                        <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
+                            <div class="page-link mg-pager-button text-nowrap" @onclick="MoveBack">
+                                <i class="fas fa-chevron-left mr-2"></i> @Localization.PreviousButtonText
+                            </div>
+                        </li>
+                        <li class="page-item disabled">
+                            <div class="page-link text-nowrap">
+                                @(string.Format(Localization.PageNumberText, QueryOptions.PageNumber))
+                            </div>
+                        </li>
+                        <li class="page-item@(!HasMoreData ? " disabled" : "")">
+                            <div class="page-link mg-pager-button text-nowrap" @onclick="MoveNext">
+                                @Localization.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div style="clear:both" id="@Id-pager"></div>
+        <div style="clear:both" id="@Id-pager"></div>
+    }
 }

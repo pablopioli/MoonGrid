@@ -29,6 +29,7 @@ namespace MoonGrid
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
         [Parameter] public RenderFragment LoadingTemplate { get; set; }
         [Parameter] public RenderFragment ErrorTemplate { get; set; }
+        [Parameter] public RenderFragment DetailsTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
@@ -41,11 +42,14 @@ namespace MoonGrid
 
         private string Id = Guid.NewGuid().ToString().Replace("-", "");
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
+        private TItem CurrentRow;
         private TItem[] FixedData { get; set; } = Array.Empty<TItem>();
         private QueryOptions QueryOptions { get; set; } = new QueryOptions();
         private bool HasMoreData { get; set; }
         private bool IsFilterActive { get; set; }
         private bool Loading { get; set; }
+        private ActionLauncher ActionLauncher { get; set; } = new ActionLauncher();
+        private bool IsInDetailMode { get; set; }
 
         private string AnchorToScroll;
         public string ActivePageSize
@@ -70,6 +74,37 @@ namespace MoonGrid
         }
 
         private bool hasEventBinded;
+
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            ActionLauncher.OnShowDetailsRequested += ActionLauncher_OnShowDetailsRequested;
+            ActionLauncher.OnShowMasterRequested += ActionLauncher_OnShowMasterRequested;
+        }
+
+        private Task ActionLauncher_OnShowDetailsRequested(object row)
+        {
+            try
+            {
+                CurrentRow = (TItem)row;
+            }
+            catch
+            {
+                CurrentRow = default;
+            }
+            IsInDetailMode = true;
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
+
+        private Task ActionLauncher_OnShowMasterRequested()
+        {
+            IsInDetailMode = false;
+            StateHasChanged();
+            CurrentRow = default;
+            return Task.CompletedTask;
+        }
 
         protected override void OnParametersSet()
         {

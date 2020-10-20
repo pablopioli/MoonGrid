@@ -1,0 +1,19 @@
+﻿<Animate Animation="Animations.SlideLeft" Duration="TimeSpan.FromSeconds(2)">
+    <div class="card mx-2 my-2" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">@Product.Name</h5>
+            <p class="card-text">More details of the product. The animation is not included by default, you can totally customize this view.</p>
+            <button class="btn btn-primary" @onclick="GoToMaster">Go back</button>
+        </div>
+    </div>
+</Animate>
+
+@code {
+    [CascadingParameter] public Product Product { get; set; }
+    [CascadingParameter] public ActionLauncher ActionLauncher { get; set; }
+
+    void GoToMaster()
+    {
+        ActionLauncher.ShowMaster();
+    }
+}

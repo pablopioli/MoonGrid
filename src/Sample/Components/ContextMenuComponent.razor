@@ -4,11 +4,10 @@
 
 @code
 {
-    [CascadingParameter] object Row { get; set; }
+    [CascadingParameter] Product Product { get; set; }
 
     async Task ExecuteAction()
     {
-        var product = Row as Product;
-        await Swal.FireAsync("Now you can show an action menu for product with SKU: " + product.Sku);
+        await Swal.FireAsync("Now you can show an action menu for product with SKU: " + Product.Sku);
     }
 }

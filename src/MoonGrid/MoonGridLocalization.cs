@@ -1,13 +1,13 @@
 ﻿namespace MoonGrid
 {
-    public abstract class GridConfiguration
+    public abstract class MoonGridLocalization
     {
-        static GridConfiguration()
+        static MoonGridLocalization()
         {
             Default = new Localization.English();
         }
 
-        public static GridConfiguration Default;
+        public static MoonGridLocalization Default;
         public string FilterEnabledIcon { get; set; } = "fas fa-filter";
         public string FilterDisabledIcon { get; set; } = "fal fa-filter";
         public string FilterButtonText { get; set; } = "Filter";

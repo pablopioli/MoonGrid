@@ -1,0 +1,57 @@
+﻿@page "/optionbuttons"
+@inject CurrieTechnologies.Razor.SweetAlert2.SweetAlertService Swal;
+
+<div class="container-fluid">
+    <h2>Option buttons</h2>
+</div>
+
+<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
+               ShowAddNewButton="true" AddNewButtonText="New Product" OnNewItem="NewItem"
+               ActionButtons="Actions">
+</MoonGrid.Grid>
+
+@code {
+    public GridColumn<Product>[] Columns;
+    public List<ActionButton> Actions = new List<ActionButton>();
+
+    protected override void OnInitialized()
+    {
+        Actions.Add(new ActionButton("Some Action", async () => await Swal.FireAsync("Some action")));
+        Actions.Add(new ActionButton("Other Action", async () => await Swal.FireAsync("Other action")));
+
+        Columns = new[] {
+            new GridColumn<Product>("Name", x => x.Name, ColumnWidth.FromEm(30)),
+            new GridColumn<Product>("Sku", x => x.Sku, ColumnWidth.FromEm(12)),
+            new GridColumn<Product>("Category", x => x.Category),
+            new GridColumn<Product>("Price", x => x.Price.ToString("C2"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment: ColumnAlignment.Right),
+            new GridColumn<Product>("Stock", x => x.Stock.ToString("N0"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment:ColumnAlignment.Right,
+                                             dynamicStyle: (Product x) => x.Stock < 100 ? "color:red;" : "" ),
+           new GridColumn<Product>("", x => "", ColumnWidth.FromEm(2))
+              {
+                 Template = typeof(Components.ContextMenuComponent)
+              }
+        };
+    }
+
+    public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)
+    {
+        // You generally do this in the server, send the query options via HttpClient
+        // Use sample data in this example
+        var data = Program.FakeData;
+        var pagedData = data.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+
+        var result = new QueryResult<Product>();
+        result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+        result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+        return Task.FromResult(result);
+    }
+
+    async Task NewItem()
+    {
+        await Swal.FireAsync("New product button clicked");
+    }
+}

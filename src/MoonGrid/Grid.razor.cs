@@ -33,6 +33,7 @@ namespace MoonGrid
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
+        [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
 

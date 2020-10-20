@@ -22,5 +22,10 @@ namespace MoonGrid
             ResultData = resultData;
             HasMoreData = hasMoreData;
         }
+
+        public QueryResult(string error)
+        {
+            Error = error;
+        }
     }
 }

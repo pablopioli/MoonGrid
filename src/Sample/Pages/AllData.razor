@@ -1,0 +1,41 @@
+﻿@page "/alldata"
+
+<div class="container-fluid">
+    <h2>Provide all data on load</h2>
+</div>
+
+<MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="DataGrid">
+</MoonGrid.Grid>
+
+@code {
+    public GridColumn<Product>[] Columns;
+    private Grid<Product> DataGrid;
+
+    protected override void OnInitialized()
+    {
+        Columns = new[] {
+            new GridColumn<Product>("Name", x => x.Name, ColumnWidth.FromEm(30)),
+            new GridColumn<Product>("Sku", x => x.Sku, ColumnWidth.FromEm(12)),
+            new GridColumn<Product>("Category", x => x.Category),
+            new GridColumn<Product>("Price", x => x.Price.ToString("C2"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment: ColumnAlignment.Right),
+            new GridColumn<Product>("Stock", x => x.Stock.ToString("N0"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment:ColumnAlignment.Right,
+                                             dynamicStyle: (Product x) => x.Stock < 100 ? "color:red;" : "" ),
+           new GridColumn<Product>("", x => "", ColumnWidth.FromEm(2))
+              {
+                 Template = typeof(Components.ContextMenuComponent)
+              }
+        };
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            DataGrid.SetData(Program.FakeData);
+        }
+    }
+}

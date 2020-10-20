@@ -14,7 +14,7 @@
             @if (OrderOptions.Count() > 0)
             {
                 <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
-                    <span class="mr-1">@GridConfiguration.Default.OrderByText</span>
+                    <span class="mr-1">@Localization.OrderByText</span>
                     <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
                         @foreach (var item in OrderOptions)
                         {
@@ -29,13 +29,13 @@
                 <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
                     @if (IsFilterActive)
                     {
-                        <i class="@GridConfiguration.Default.FilterEnabledIcon"></i>
+                        <i class="@Localization.FilterEnabledIcon"></i>
                     }
                     else
                     {
-                        <i class="@GridConfiguration.Default.FilterDisabledIcon"></i>
+                        <i class="@Localization.FilterDisabledIcon"></i>
                     }
-                    @GridConfiguration.Default.FilterButtonText
+                    @Localization.FilterButtonText
                 </button>
 
                 <div id="grid-filter" class="collapse my-2">
@@ -182,7 +182,7 @@ else
     <div class="container-fluid my-1">
         <div class="row">
             <div class="col-auto">
-                <label for="pagecount">@GridConfiguration.Default.ItemsPerPage</label>
+                <label for="pagecount">@Localization.ItemsPerPage</label>
                 <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
                     <option value="15">15</option>
                     <option value="30">30</option>
@@ -195,17 +195,17 @@ else
                 <ul class="pagination justify-content-md-end mt-2 mt-sm-0">
                     <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
                         <div class="page-link mg-pager-button text-nowrap" @onclick="MoveBack">
-                            <i class="fas fa-chevron-left mr-2"></i> @GridConfiguration.Default.PreviousButtonText
+                            <i class="fas fa-chevron-left mr-2"></i> @Localization.PreviousButtonText
                         </div>
                     </li>
                     <li class="page-item disabled">
                         <div class="page-link text-nowrap">
-                            @(string.Format(GridConfiguration.Default.PageNumberText, QueryOptions.PageNumber))
+                            @(string.Format(Localization.PageNumberText, QueryOptions.PageNumber))
                         </div>
                     </li>
                     <li class="page-item@(!HasMoreData ? " disabled" : "")">
                         <div class="page-link mg-pager-button text-nowrap" @onclick="MoveNext">
-                            @GridConfiguration.Default.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
+                            @Localization.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
                         </div>
                     </li>
                 </ul>

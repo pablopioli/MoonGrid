@@ -1,6 +1,6 @@
 ﻿namespace MoonGrid.Localization
 {
-    public class English : GridConfiguration
+    public class English : MoonGridLocalization
     {
         public English()
         {

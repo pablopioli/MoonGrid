@@ -1,0 +1,26 @@
+﻿@page "/listview"
+
+<div class="container-fluid">
+    <h2>List View</h2>
+</div>
+
+<MoonGrid.Grid TItem="Product" DataSource="@GetProductData">
+    <ListViewTemplate>
+        <Sample.Components.ListViewTemplate></Sample.Components.ListViewTemplate>
+    </ListViewTemplate>
+</MoonGrid.Grid>
+
+@code {
+    public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)
+    {
+        // You generally do this in the server, send the query options via HttpClient
+        // Use sample data in this example
+        var data = Program.FakeData;
+        var pagedData = data.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+
+        var result = new QueryResult<Product>();
+        result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+        result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+        return Task.FromResult(result);
+    }
+}

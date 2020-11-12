@@ -76,102 +76,128 @@ else
     else
     {
         <div class="container-fluid my-2">
-            <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
-                    <thead class="@HeaderClass">
-                        <tr>
-                            @if (Expandable)
-                            {
-                                <th></th>
-                            }
+            @if (ListViewTemplate == null)
+            {
+                <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
+                    <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+                        <thead class="@HeaderClass">
+                            <tr>
+                                @if (Expandable)
+                                {
+                                    <th></th>
+                                }
 
-                            @foreach (var column in Columns)
-                            {
-                                var style = ComputeHeaderStyle(column);
-                                var className = ComputeClass(column);
-                                <th style="@style" class="@className">
-                                    @column.Title
-                                </th>
-                            }
-                        </tr>
-                    </thead>
-                    @if (Loading)
-                    {
-                        @LoadingTemplate
-                    }
-                    else if (string.IsNullOrEmpty(ErrorText))
-                    {
-                        <tbody>
-                            @foreach (var row in Data)
-                            {
-                                var item = row.Item;
-                                var key = row.Key;
-                                <tr @key=key>
-                                    @if (Expandable)
-                                    {
-                                        <td>
-                                            @if (row.Expanded)
+                                @foreach (var column in Columns)
+                                {
+                                    var style = ComputeHeaderStyle(column);
+                                    var className = ComputeClass(column);
+                                    <th style="@style" class="@className">
+                                        @column.Title
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+
+                        @if (Loading)
+                        {
+                            @LoadingTemplate
+                        }
+
+                        else if (string.IsNullOrEmpty(ErrorText))
+                        {
+                            <tbody>
+                                @foreach (var row in Data)
+                                {
+                                    var item = row.Item;
+                                    var key = row.Key;
+                                    <tr @key=key>
+                                        @if (Expandable)
+                                        {
+                                            <td>
+                                                @if (row.Expanded)
+                                                {
+                                                    <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
+                                                }
+                                            </td>
+                                        }
+
+                                        @foreach (var column in Columns)
+                                        {
+                                            var style = ComputeStyle(column, item);
+                                            var className = ComputeClass(column);
+                                            @if (column.Template == null)
                                             {
-                                                <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                                <td style="@style" class="@className">
+                                                    @column.Source.Invoke(item)
+                                                </td>
                                             }
                                             else
                                             {
-                                                <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
-                                            }
-                                        </td>
-                                    }
-
-                                    @foreach (var column in Columns)
-                                    {
-                                        var style = ComputeStyle(column, item);
-                                        var className = ComputeClass(column);
-                                        @if (column.Template == null)
-                                        {
-                                            <td style="@style" class="@className">
-                                                @column.Source.Invoke(item)
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
-                                            <td style="@style" class="@className">
-                                                <CascadingValue Value="@item">
-                                                    <CascadingValue Value="ActionLauncher">
-                                                        @renderFragment
+                                                RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
+                                                <td style="@style" class="@className">
+                                                    <CascadingValue Value="@item">
+                                                        <CascadingValue Value="ActionLauncher">
+                                                            @renderFragment
+                                                        </CascadingValue>
                                                     </CascadingValue>
-                                                </CascadingValue>
-                                            </td>
+                                                </td>
+                                            }
                                         }
-                                    }
-                                </tr>
-                                @if (row.Expanded)
-                                {
-                                    <tr>
-                                        <td colspan="200">
-                                            @row.Content
-                                        </td>
                                     </tr>
-                                }
-                            }
-                        </tbody>
-                        @if (Data.Length > 0 && ShowTableFooter)
-                        {
-                            <tfoot>
-                                <tr>
-                                    @foreach (var column in Columns)
+                                    @if (row.Expanded)
                                     {
-                                        var style = ComputeHeaderStyle(column);
-                                        var className = ComputeClass(column);
-                                        <th style="@style" class="@className">
-                                            @column.Title
-                                        </th>
+                                        <tr>
+                                            <td colspan="200">
+                                                @row.Content
+                                            </td>
+                                        </tr>
                                     }
-                                </tr>
-                            </tfoot>
+                                }
+                            </tbody>
+                            @if (Data.Length > 0 && ShowTableFooter)
+                            {
+                                <tfoot>
+                                    <tr>
+                                        @foreach (var column in Columns)
+                                        {
+                                            var style = ComputeHeaderStyle(column);
+                                            var className = ComputeClass(column);
+                                            <th style="@style" class="@className">
+                                                @column.Title
+                                            </th>
+                                        }
+                                    </tr>
+                                </tfoot>
+                            }
                         }
+                    </table>
+                </div>
+            }
+            else
+            {
+                @if (Loading)
+                {
+                    @LoadingTemplate
+                }
+
+                else if (string.IsNullOrEmpty(ErrorText))
+                {
+                    @foreach (var row in Data)
+                    {
+                        var item = row.Item;
+                        var key = row.Key;
+                        <div @key=key>
+                            <CascadingValue Value="@item">
+                                @ListViewTemplate
+                            </CascadingValue>
+                        </div>
                     }
-                </table>
-            </div>
+                }
+            }
 
             @if (!string.IsNullOrEmpty(ErrorText))
             {
@@ -194,13 +220,16 @@ else
         <div class="container-fluid my-1">
             <div class="row">
                 <div class="col-auto">
-                    <label for="pagecount">@Localization.ItemsPerPage</label>
-                    <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
-                        <option value="15">15</option>
-                        <option value="30">30</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
+                    @if (CanChangePageSize)
+                    {
+                        <label for="pagecount">@Localization.ItemsPerPage</label>
+                        <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
+                            <option value="15">15</option>
+                            <option value="30">30</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    }
                 </div>
 
                 <div class="col-sm">

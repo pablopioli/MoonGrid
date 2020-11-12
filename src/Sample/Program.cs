@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MoonGrid;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -23,6 +24,8 @@ namespace Sample
             builder.Services.AddSweetAlert2();
 
             // You can localize the grid
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.DefaultThreadCurrentCulture;
             MoonGridLocalization.Default = new MoonGrid.Localization.English();
 
             // Configure default values for grid

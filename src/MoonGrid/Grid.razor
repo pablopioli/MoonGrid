@@ -79,7 +79,7 @@ else
             @if (ListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                    <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @(!Expandable ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+                    <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
                         <thead class="@HeaderClass">
                             <tr>
                                 @if (Expandable)
@@ -129,6 +129,7 @@ else
                                         {
                                             var style = ComputeStyle(column, item);
                                             var className = ComputeClass(column);
+
                                             @if (column.Template == null)
                                             {
                                                 <td style="@style" class="@className">
@@ -148,10 +149,19 @@ else
                                             }
                                         }
                                     </tr>
-                                    @if (row.Expanded)
+
+                                    @if (AdditionalRowTemplate != null)
                                     {
                                         <tr>
-                                            <td colspan="200">
+                                            <td colspan="@Columns.Count" class="moongrid-additional-row">
+                                                @AdditionalRowTemplate(item)
+                                            </td>
+                                        </tr>
+                                    }
+                                    else if (row.Expanded)
+                                    {
+                                        <tr>
+                                            <td colspan="@Columns.Count">
                                                 @row.Content
                                             </td>
                                         </tr>

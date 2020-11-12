@@ -24,6 +24,10 @@
         font-weight: 200;
     }
 
+.moongrid-additional-row {
+    border-top: 0px;
+    }
+
 .downchevron:after {
     content: '\2BC6';
 }

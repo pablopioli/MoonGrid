@@ -191,9 +191,7 @@ else
                         var item = row.Item;
                         var key = row.Key;
                         <div @key=key>
-                            <CascadingValue Value="@item">
-                                @ListViewTemplate
-                            </CascadingValue>
+                            @ListViewTemplate(item)
                         </div>
                     }
                 }
@@ -207,9 +205,7 @@ else
                 }
                 else
                 {
-                    <CascadingValue Value="@ErrorText">
-                        @ErrorTemplate
-                    </CascadingValue>
+                    @ErrorTemplate(ErrorText)
                 }
             }
         </div>

@@ -25,11 +25,11 @@ namespace MoonGrid
         [Parameter] public bool FreezeFirstColumn { get; set; }
         [Parameter] public Func<QueryOptions, Task<QueryResult<TItem>>> DataSource { get; set; }
         [Parameter] public Func<TItem, Task<RenderFragment>> ItemDetails { get; set; }
-        [Parameter] public RenderFragment ListViewTemplate { get; set; }
+        [Parameter] public RenderFragment<TItem> ListViewTemplate { get; set; }
         [Parameter] public RenderFragment FilterTemplate { get; set; }
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
         [Parameter] public RenderFragment LoadingTemplate { get; set; }
-        [Parameter] public RenderFragment ErrorTemplate { get; set; }
+        [Parameter] public RenderFragment<string> ErrorTemplate { get; set; }
         [Parameter] public RenderFragment DetailsTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
         [Parameter] public bool CanChangePageSize { get; set; } = true;

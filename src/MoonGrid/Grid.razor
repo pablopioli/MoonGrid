@@ -1,6 +1,6 @@
 ﻿@typeparam TItem
 
-<link href="_content/MoonGrid/styles.min.css" rel="stylesheet">
+<link href="./_content/MoonGrid/MoonGrid.bundle.scp.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
 @if (IsInDetailMode)
@@ -59,7 +59,7 @@ else
                 <div class="col text-md-right">
                     @foreach (var action in ActionButtons)
                     {
-                        <button type="button" class="btn btn-secondary my-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
+                        <button type="button" class="btn btn-secondary my-1 ml-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
                     }
                 </div>
             }

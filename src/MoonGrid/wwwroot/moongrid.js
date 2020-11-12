@@ -1,7 +1,7 @@
-﻿window.goToAnchor = (id) => {
+﻿export function goToAnchor(id) {
     document.getElementById(id).scrollIntoView();
-};
+}
 
-window.goToAnchorBottom = (id) => {
+export function goToAnchorBottom(id) {
     document.getElementById(id).scrollIntoView(false);
-};
+}

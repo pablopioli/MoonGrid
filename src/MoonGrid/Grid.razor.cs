@@ -68,46 +68,23 @@ namespace MoonGrid
             }
         }
 
-        private async Task OnNewButtonActivated()
-        {
-            await OnNewItem.InvokeAsync(null);
-        }
 
-        private bool hasEventBinded;
-
-        protected override void OnInitialized()
+        private IJSObjectReference JsModule;
+        protected override async Task OnInitializedAsync()
         {
-            base.OnInitialized();
+            await base.OnInitializedAsync();
+
+            JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/MoonGrid/moongrid.js");
 
             ActionLauncher.OnShowDetailsRequested += ActionLauncher_OnShowDetailsRequested;
             ActionLauncher.OnShowMasterRequested += ActionLauncher_OnShowMasterRequested;
         }
 
-        private Task ActionLauncher_OnShowDetailsRequested(object row)
-        {
-            try
-            {
-                CurrentRow = (TItem)row;
-            }
-            catch
-            {
-                CurrentRow = default;
-            }
-            IsInDetailMode = true;
-            StateHasChanged();
-            return Task.CompletedTask;
-        }
-
-        private Task ActionLauncher_OnShowMasterRequested()
-        {
-            IsInDetailMode = false;
-            StateHasChanged();
-            CurrentRow = default;
-            return Task.CompletedTask;
-        }
-
+        private bool hasEventBinded;
         protected override void OnParametersSet()
         {
+            base.OnParametersSet();
+
             if (!hasEventBinded && EventCallbacks != null)
             {
                 EventCallbacks.OnFilterStatusChanged += EventCallbacks_OnFilterStatusChanged;
@@ -133,17 +110,6 @@ namespace MoonGrid
             }
         }
 
-        private async Task EventCallbacks_OnFilterStatusChanged(bool isActive)
-        {
-            IsFilterActive = isActive;
-            await UpdateCurrentData();
-        }
-
-        private async Task EventCallbacks_OnStatusHasChanged()
-        {
-            await UpdateCurrentData();
-        }
-
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -159,10 +125,49 @@ namespace MoonGrid
             {
                 if (!string.IsNullOrEmpty(AnchorToScroll))
                 {
-                    await JSRuntime.InvokeVoidAsync("goToAnchorBottom", AnchorToScroll);
+                    await JsModule.InvokeVoidAsync("goToAnchorBottom", AnchorToScroll);
                     AnchorToScroll = null;
                 }
             }
+        }
+
+        private async Task OnNewButtonActivated()
+        {
+            await OnNewItem.InvokeAsync(null);
+        }
+
+        private async Task EventCallbacks_OnFilterStatusChanged(bool isActive)
+        {
+            IsFilterActive = isActive;
+            await UpdateCurrentData();
+        }
+
+        private async Task EventCallbacks_OnStatusHasChanged()
+        {
+            await UpdateCurrentData();
+        }
+
+        private Task ActionLauncher_OnShowDetailsRequested(object row)
+        {
+            try
+            {
+                CurrentRow = (TItem)row;
+            }
+            catch
+            {
+                CurrentRow = default;
+            }
+            IsInDetailMode = true;
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
+
+        private Task ActionLauncher_OnShowMasterRequested()
+        {
+            IsInDetailMode = false;
+            StateHasChanged();
+            CurrentRow = default;
+            return Task.CompletedTask;
         }
 
         private async Task UpdateCurrentData()
@@ -220,7 +225,7 @@ namespace MoonGrid
             {
                 QueryOptions.PageNumber--;
                 await UpdateCurrentData();
-                await JSRuntime.InvokeVoidAsync("goToAnchor", Id);
+                await JsModule.InvokeVoidAsync("goToAnchor", Id);
             }
         }
 
@@ -230,7 +235,7 @@ namespace MoonGrid
             {
                 QueryOptions.PageNumber++;
                 await UpdateCurrentData();
-                await JSRuntime.InvokeVoidAsync("goToAnchor", Id);
+                await JsModule.InvokeVoidAsync("goToAnchor", Id);
             }
         }
 

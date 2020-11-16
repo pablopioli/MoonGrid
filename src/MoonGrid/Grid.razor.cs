@@ -38,6 +38,7 @@ namespace MoonGrid
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
         [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;
+        [Parameter] public IEnumerable<TItem> DataItems { get; set; }
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
 
@@ -109,6 +110,11 @@ namespace MoonGrid
             else if (InitialPageSize == 100)
             {
                 QueryOptions.PageSize = 100;
+            }
+
+            if (DataItems != null)
+            {
+                SetData(DataItems);
             }
         }
 

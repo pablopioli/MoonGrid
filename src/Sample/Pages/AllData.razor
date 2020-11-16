@@ -4,12 +4,14 @@
     <h2>Provide all data on load</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="DataGrid">
+<MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="DataGrid" DataItems="Products">
 </MoonGrid.Grid>
 
 @code {
     public GridColumn<Product>[] Columns;
     private Grid<Product> DataGrid;
+
+    public IEnumerable<Product> Products { get; set; } = Program.FakeData;
 
     protected override void OnInitialized()
     {
@@ -31,11 +33,12 @@
         };
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            DataGrid.SetData(Program.FakeData);
-        }
-    }
+    // Assign the data by code
+    //protected override void OnAfterRender(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        DataGrid.SetData(Program.FakeData);
+    //    }
+    //}
 }

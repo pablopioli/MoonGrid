@@ -71,7 +71,6 @@ namespace MoonGrid
             }
         }
 
-
         private IJSObjectReference JsModule;
         protected override async Task OnInitializedAsync()
         {
@@ -187,15 +186,17 @@ namespace MoonGrid
             }
 
             var result = await DataSource.Invoke(QueryOptions);
-            ErrorText = result.Error;
 
-            if (!string.IsNullOrEmpty(ErrorText))
+            if (!string.IsNullOrEmpty(result.Error))
             {
                 Data = Array.Empty<DisplayableItem<TItem>>();
                 HasMoreData = false;
+                ErrorText = result.Error;
             }
             else
             {
+                ErrorText = "";
+
                 if (result.ResultData == null)
                 {
                     Data = Array.Empty<DisplayableItem<TItem>>();

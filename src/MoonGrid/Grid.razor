@@ -66,13 +66,13 @@ else
         </div>
     </div>
 
-
-    @if (Data.Length == 0 && !Loading && NoDataTemplate != null)
+    if (!Loading && !string.IsNullOrEmpty(ErrorText) && Data.Length == 0 && NoDataTemplate != null)
     {
         <div class="container-fluid my-2 float-left">
             @NoDataTemplate
         </div>
     }
+
     else
     {
         <div class="container-fluid my-2">
@@ -103,7 +103,23 @@ else
                             @LoadingTemplate
                         }
 
-                        else if (string.IsNullOrEmpty(ErrorText))
+                        else if (!string.IsNullOrEmpty(ErrorText))
+                        {
+                            <tr>
+                                <td colspan="@Columns.Count">
+                                    @if (ErrorTemplate == null)
+                                    {
+                                        <div class="text-danger text-center">@ErrorText</div>
+                                    }
+                                    else
+                                    {
+                                        @ErrorTemplate(ErrorText)
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+                        else
                         {
                             <tbody>
                                 @foreach (var row in Data)
@@ -194,7 +210,19 @@ else
                     @LoadingTemplate
                 }
 
-                else if (string.IsNullOrEmpty(ErrorText))
+                else if (!string.IsNullOrEmpty(ErrorText))
+                {
+                    @if (ErrorTemplate == null)
+                    {
+                        <p class="text-danger text-center">@ErrorText</p>
+                    }
+                    else
+                    {
+                        @ErrorTemplate(ErrorText)
+                    }
+                }
+
+                else
                 {
                     @foreach (var row in Data)
                     {
@@ -204,18 +232,6 @@ else
                             @ListViewTemplate(item)
                         </div>
                     }
-                }
-            }
-
-            @if (!string.IsNullOrEmpty(ErrorText))
-            {
-                @if (ErrorTemplate == null)
-                {
-                    <p class="text-danger text-center">@ErrorText</p>
-                }
-                else
-                {
-                    @ErrorTemplate(ErrorText)
                 }
             }
         </div>

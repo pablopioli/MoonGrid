@@ -54,6 +54,7 @@ namespace MoonGrid
         private bool Loading { get; set; }
         private ActionLauncher ActionLauncher { get; set; } = new ActionLauncher();
         private bool IsInDetailMode { get; set; }
+        private IEnumerable<TItem> UsedDataItems { get; set; }
 
         private string AnchorToScroll;
         public string ActivePageSize
@@ -112,9 +113,10 @@ namespace MoonGrid
                 QueryOptions.PageSize = 100;
             }
 
-            if (DataItems != null)
+            if (DataItems != null && !ReferenceEquals(DataItems, UsedDataItems))
             {
                 SetData(DataItems);
+                UsedDataItems = DataItems;
             }
         }
 

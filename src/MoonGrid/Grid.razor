@@ -169,7 +169,7 @@ else
                                     @if (AdditionalRowTemplate != null)
                                     {
                                         <tr>
-                                            <td colspan="@Columns.Count" class="moongrid-additional-row">
+                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="moongrid-additional-row">
                                                 @AdditionalRowTemplate(item)
                                             </td>
                                         </tr>
@@ -177,7 +177,7 @@ else
                                     else if (row.Expanded)
                                     {
                                         <tr>
-                                            <td colspan="@Columns.Count">
+                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="moongrid-additional-row">
                                                 @row.Content
                                             </td>
                                         </tr>

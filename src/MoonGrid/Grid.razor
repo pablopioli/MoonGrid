@@ -66,7 +66,7 @@ else
         </div>
     </div>
 
-    if (!Loading && !string.IsNullOrEmpty(ErrorText) && Data.Length == 0 && NoDataTemplate != null)
+    if (!Loading && string.IsNullOrEmpty(ErrorText) && Data.Length == 0 && NoDataTemplate != null)
     {
         <div class="container-fluid my-2 float-left">
             @NoDataTemplate

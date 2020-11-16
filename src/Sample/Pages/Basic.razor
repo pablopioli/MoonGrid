@@ -40,6 +40,7 @@
         var result = new QueryResult<Product>();
         result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
         result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+
         return Task.FromResult(result);
     }
 }

@@ -78,7 +78,7 @@ namespace MoonGrid
         {
             await base.OnInitializedAsync();
 
-            JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/MoonGrid/moongrid.js");
+            JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/_content/MoonGrid/moongrid.js");
 
             ActionLauncher.OnShowDetailsRequested += ActionLauncher_OnShowDetailsRequested;
             ActionLauncher.OnShowMasterRequested += ActionLauncher_OnShowMasterRequested;

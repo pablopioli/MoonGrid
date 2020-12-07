@@ -23,7 +23,7 @@ namespace MoonGrid
         [Parameter] public bool Expandable { get; set; }
         [Parameter] public bool ShowTableFooter { get; set; }
         [Parameter] public bool FreezeFirstColumn { get; set; }
-        [Parameter] public Func<QueryOptions, Task<QueryResult<TItem>>> DataSource { get; set; }
+        [Parameter] public Func<QueryOptions<TItem>, Task<QueryResult<TItem>>> DataSource { get; set; }
         [Parameter] public Func<TItem, Task<RenderFragment>> ItemDetails { get; set; }
         [Parameter] public RenderFragment FilterTemplate { get; set; }
         [Parameter] public RenderFragment NoDataTemplate { get; set; }
@@ -37,6 +37,7 @@ namespace MoonGrid
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
+        [Parameter] public bool AsynchronousLoading { get; set; } = false;
         [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;
         [Parameter] public IEnumerable<TItem> DataItems { get; set; }
 
@@ -48,7 +49,7 @@ namespace MoonGrid
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
         private TItem CurrentRow;
         private TItem[] FixedData { get; set; } = Array.Empty<TItem>();
-        private QueryOptions QueryOptions { get; set; } = new QueryOptions();
+        private QueryOptions<TItem> QueryOptions { get; set; } = new QueryOptions<TItem>();
         private bool HasMoreData { get; set; }
         private bool IsFilterActive { get; set; }
         private bool Loading { get; set; }
@@ -193,8 +194,30 @@ namespace MoonGrid
                 StateHasChanged();
             }
 
+            if (AsynchronousLoading)
+            {
+                QueryOptions.CallBack = ProcessCallbackResult;
+            }
+            else
+            {
+                QueryOptions.CallBack = null;
+            }
+
             var result = await DataSource.Invoke(QueryOptions);
 
+            if (!AsynchronousLoading)
+            {
+                UpdateUiWithResult(result);
+            }
+        }
+
+        private void ProcessCallbackResult(QueryResult<TItem> result)
+        {
+            UpdateUiWithResult(result);
+        }
+
+        private void UpdateUiWithResult(QueryResult<TItem> result)
+        {
             if (!string.IsNullOrEmpty(result.Error))
             {
                 Data = Array.Empty<DisplayableItem<TItem>>();
@@ -391,7 +414,7 @@ namespace MoonGrid
             return true;
         }
 
-        private Task<QueryResult<TItem>> InternalDataSource(QueryOptions queryOptions)
+        private Task<QueryResult<TItem>> InternalDataSource(QueryOptions<TItem> queryOptions)
         {
             var result = new QueryResult<TItem>();
 

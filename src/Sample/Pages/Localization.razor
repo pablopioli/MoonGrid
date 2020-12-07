@@ -4,7 +4,7 @@
     <h2>Localization</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"  Localization="GridLocalization">
+<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" Localization="GridLocalization">
 </MoonGrid.Grid>
 
 @code {
@@ -31,7 +31,7 @@
         };
     }
 
-    public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)
+    public Task<QueryResult<Product>> GetProductData(QueryOptions<Product> queryOptions)
     {
         // You generally do this in the server, send the query options via HttpClient
         // Use sample data in this example

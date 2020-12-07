@@ -63,7 +63,7 @@
         };
     }
 
-    public Task<QueryResult<Product>> GetProductData(QueryOptions queryOptions)
+    public Task<QueryResult<Product>> GetProductData(QueryOptions<Product> queryOptions)
     {
         // You generally do this in the server, send the query options via HttpClient
         // Use sample data in this example

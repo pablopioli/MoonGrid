@@ -1,0 +1,96 @@
+﻿@page "/dynamicupdate"
+
+<div class="container-fluid">
+    <h2>Dynamically update elements</h2>
+    <p>Element must be in active page. IsPageable = false is recommended.</p>
+</div>
+
+<div class="mx-2">
+    @if (FirstElement != null)
+    {
+        <button class="btn btn-secondary" @onclick="AddItem">Add Item</button>
+        <button class="btn btn-secondary ml-2" @onclick="UpdateItem">Update Item</button>
+        <button class="btn btn-secondary ml-2" @onclick="DeleteItem">Delete Item</button>
+    }
+</div>
+
+<MoonGrid.Grid 
+         TItem="Product" Columns="@Columns" @ref="DataGrid" IsPageable="false"
+         HeaderClass="thead-dark" Expandable="true" ItemDetails="GetDetails">
+</MoonGrid.Grid>
+
+@code {
+    public GridColumn<Product>[] Columns;
+    private Grid<Product> DataGrid;
+
+    protected override void OnInitialized()
+    {
+        Columns = new[] {
+            new GridColumn<Product>("Name", x => x.Name, ColumnWidth.FromEm(30)),
+            new GridColumn<Product>("Sku", x => x.Sku, ColumnWidth.FromEm(12)),
+            new GridColumn<Product>("Category", x => x.Category),
+            new GridColumn<Product>("Price", x => x.Price.ToString("C2"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment: ColumnAlignment.Right),
+            new GridColumn<Product>("Stock", x => x.Stock.ToString("N0"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment:ColumnAlignment.Right,
+                                             dynamicStyle: (Product x) => x.Stock < 100 ? "color:red;" : "" ),
+           new GridColumn<Product>("", x => "", ColumnWidth.FromEm(2))
+              {
+                 Template = typeof(Components.ContextMenuComponent)
+              }
+        };
+    }
+
+    Product FirstElement { get; set; }
+    List<Product> _products;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _products = Program.FakeData.Take(5).ToList();
+            FirstElement = _products.First();
+            DataGrid.SetData(_products);
+            StateHasChanged();
+        }
+    }
+
+    void AddItem()
+    {
+        var product = new Product
+        {
+            Name = "Created on " + DateTime.Now.ToString()
+        };
+
+        DataGrid.AddItem(product, FirstElement);
+    }
+
+    void UpdateItem()
+    {
+        FirstElement.Name = "Updated on " + DateTime.Now.ToString();
+        DataGrid.UpdateItem(FirstElement);
+    }
+
+    void DeleteItem()
+    {
+        if (DataGrid.DeleteItem(FirstElement))
+        {
+            _products.Remove(FirstElement);
+            FirstElement = _products.FirstOrDefault();
+        }
+    }
+
+    Task<RenderFragment> GetDetails(Product product)
+    {
+        RenderFragment renderFragment = (builder) =>
+        {
+            builder.OpenComponent<Components.GridItemExpanded>(0);
+            builder.AddAttribute(1, "Product", product);
+            builder.CloseComponent();
+        };
+
+        return Task.FromResult(renderFragment);
+    }
+}

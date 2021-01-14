@@ -387,7 +387,108 @@ namespace MoonGrid
             Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
         }
 
+        public bool AddItem(TItem item, TItem afterItem)
+        {
+            var indexF = Array.IndexOf(FixedData, afterItem);
+            if (indexF == -1)
+            {
+                return false;
+            }
+
+            var anchorItem = FixedData[indexF];
+
+            var indexD = -1;
+            for (int i = 0; i < Data.Length; i++)
+            {
+                if (ReferenceEquals(Data[i].Item, anchorItem))
+                {
+                    indexD = i;
+                    break;
+                }
+            }
+
+            if (indexD == -1)
+            {
+                return false;
+            }
+
+            FixedData = FixedData.Take(indexF + 1)
+                                 .Concat(new[] { item })
+                                 .Concat(FixedData.Skip(indexF + 1))
+                                 .ToArray();
+
+            var displayableItem = new DisplayableItem<TItem>(item);
+
+            Data = Data.Take(indexD + 1)
+                       .Concat(new[] { displayableItem })
+                       .Concat(Data.Skip(indexD + 1))
+                       .ToArray();
+
+            StateHasChanged();
+
+            return true;
+        }
+
         public bool UpdateItem(TItem item)
+        {
+            var indexF = Array.IndexOf(FixedData, item);
+
+            var indexD = -1;
+            for (int i = 0; i < Data.Length; i++)
+            {
+                if (ReferenceEquals(Data[i].Item, item))
+                {
+                    indexD = i;
+                    break;
+                }
+            }
+
+            if (indexF == -1 || indexD == -1)
+            {
+                return false;
+            }
+
+            FixedData[indexF] = item;
+            Data[indexD].Key = Guid.NewGuid();
+
+            StateHasChanged();
+
+            return true;
+        }
+
+        public bool DeleteItem(TItem item)
+        {
+            var indexF = Array.IndexOf(FixedData, item);
+
+            var indexD = -1;
+            for (int i = 0; i < Data.Length; i++)
+            {
+                if (ReferenceEquals(Data[i].Item, item))
+                {
+                    indexD = i;
+                    break;
+                }
+            }
+
+            if (indexF == -1 || indexD == -1)
+            {
+                return false;
+            }
+
+            FixedData = FixedData.Take(indexF)
+                                 .Concat(FixedData.Skip(indexF + 1))
+                                 .ToArray();
+
+            Data = Data.Take(indexD)
+                       .Concat(Data.Skip(indexD + 1))
+                       .ToArray();
+
+            StateHasChanged();
+
+            return true;
+        }
+
+        public bool RemoveItem(TItem item)
         {
             var indexF = Array.IndexOf(FixedData, item);
 
@@ -440,10 +541,17 @@ namespace MoonGrid
                 orderedData = FixedData;
             }
 
-            var pagedData = orderedData.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
-
-            result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
-            result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+            if (IsPageable)
+            {
+                var pagedData = orderedData.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+                result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+                result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+            }
+            else
+            {
+                result.ResultData = orderedData.ToArray();
+                result.HasMoreData = false;
+            }
 
             return Task.FromResult(result);
         }

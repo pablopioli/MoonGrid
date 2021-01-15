@@ -387,12 +387,22 @@ namespace MoonGrid
             Dispatcher.CreateDefault().InvokeAsync(async () => await UpdateCurrentData());
         }
 
+        public bool AddItem(TItem item)
+        {
+            return AddItem(item, default(TItem));
+        }
+
         public bool AddItem(TItem item, TItem afterItem)
         {
-            var indexF = Array.IndexOf(FixedData, afterItem);
-            if (indexF == -1)
+            var indexF = 0;
+
+            if (afterItem != null)
             {
-                return false;
+                indexF = Array.IndexOf(FixedData, afterItem);
+                if (indexF == -1)
+                {
+                    return false;
+                }
             }
 
             var anchorItem = FixedData[indexF];
@@ -412,17 +422,26 @@ namespace MoonGrid
                 return false;
             }
 
-            FixedData = FixedData.Take(indexF + 1)
+            var displayableItem = new DisplayableItem<TItem>(item);
+
+            if (afterItem != null)
+            {
+                FixedData = FixedData.Take(indexF + 1)
                                  .Concat(new[] { item })
                                  .Concat(FixedData.Skip(indexF + 1))
                                  .ToArray();
 
-            var displayableItem = new DisplayableItem<TItem>(item);
+                Data = Data.Take(indexD + 1)
+                           .Concat(new[] { displayableItem })
+                           .Concat(Data.Skip(indexD + 1))
+                           .ToArray();
+            }
+            else
+            {
+                FixedData = new[] { item }.Concat(FixedData).ToArray();
 
-            Data = Data.Take(indexD + 1)
-                       .Concat(new[] { displayableItem })
-                       .Concat(Data.Skip(indexD + 1))
-                       .ToArray();
+                Data = new[] { displayableItem }.Concat(Data).ToArray();
+            }
 
             StateHasChanged();
 

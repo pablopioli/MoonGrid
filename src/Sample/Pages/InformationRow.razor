@@ -4,7 +4,8 @@
     <h2>Information Row</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" HeaderClass="thead-dark">
+<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" 
+               HeaderClass="thead-dark" CellClass="raw-cell">
     <AdditionalRowTemplate Context="product">
         <div class="alert alert-primary" role="alert" style="max-width: 40rem">
             More information about @product.Name

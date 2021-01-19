@@ -12,21 +12,21 @@
         <div class="form-inline">
             @if (IsFilterActive)
             {
-                <input disabled type="text" class="form-control mb-2 mr-sm-2" id="filter-name-disabled" @bind="CategoryFilter">
+                <input disabled type="text" class="form-control mb-2 mr-sm-2 me-sm-2" id="filter-name-disabled" @bind="CategoryFilter" style="display:inline;width:auto;">
 
-                <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="RemoveFilter">
-                    <i class="fas fa-times" style="font-size: 1.2rem;"></i>
-                    <span style="font-size: 1rem;">Remove filter</span>
+                <button type="button" class="mb-2 ml-lg-1 ms-lg-1 btn btn-dark" @onclick="RemoveFilter">
+                    <i class="fas fa-times"></i>
+                    <span class="ml-2 ms-2">Remove filter</span>
                 </button>
             }
             else
             {
-                <div class="mr-2">Filter by category</div>
-                <input type="text" class="form-control mb-2 mr-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category">
+                <span class="mr-2">Filter by category</span>
+                <input type="text" class="form-control mb-2 ms-2 mr-sm-2 me-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category" style="display:inline;width:auto;">
 
-                <button type="button" class="mb-2 ml-lg-1 pt-md-2 btn btn-dark pr-3" @onclick="ApplyFilter">
-                    <i class="fas fa-check" style="font-size: 1.2rem;"></i>
-                    <span style="font-size: 1rem;">Apply</span>
+                <button type="button" class="mb-2 ml-lg-1 ms-lg-1 btn btn-dark" @onclick="ApplyFilter">
+                    <i class="fas fa-check"></i>
+                    <span class="ml-2 ms-2">Apply</span>
                 </button>
             }
         </div>
@@ -99,7 +99,7 @@
     void RemoveFilter()
     {
         IsFilterActive = false;
-        EventCallbacks.RaiseFilterStatusChange(true);
+        EventCallbacks.RaiseFilterStatusChange(false);
     }
 
     void ApplyFilter()
@@ -110,6 +110,6 @@
         }
 
         IsFilterActive = true;
-        EventCallbacks.RaiseFilterStatusChange(false);
+        EventCallbacks.RaiseFilterStatusChange(true);
     }
 }

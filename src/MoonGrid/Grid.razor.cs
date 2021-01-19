@@ -40,6 +40,7 @@ namespace MoonGrid
         [Parameter] public bool AsynchronousLoading { get; set; } = false;
         [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;
         [Parameter] public IEnumerable<TItem> DataItems { get; set; }
+        [Parameter] public string CellClass { get; set; } = "";
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
 
@@ -151,6 +152,7 @@ namespace MoonGrid
         {
             IsFilterActive = isActive;
             await UpdateCurrentData();
+            StateHasChanged();
         }
 
         private async Task EventCallbacks_OnStatusHasChanged()
@@ -332,9 +334,14 @@ namespace MoonGrid
             return style.ToString();
         }
 
-        public string ComputeClass(GridColumn<TItem> column)
+        public string ComputeClass(GridColumn<TItem> column, string additionalClasses = null)
         {
             var classNames = new StringBuilder("moongrid-cell");
+
+            if (!string.IsNullOrEmpty(additionalClasses))
+            {
+                classNames.Append(" " + additionalClasses);
+            }
 
             if (column.Alignment == ColumnAlignment.Center)
             {

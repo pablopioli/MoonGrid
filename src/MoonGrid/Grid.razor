@@ -15,42 +15,50 @@ else
 {
     <div class="container-fluid" id="@Id">
         <div class="row">
-            <div class="col-auto">
+
+            <div class="col-auto row-cols-auto g-3">
+
                 @if (ShowAddNewButton)
                 {
-                    <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated">@AddNewButtonText</button>
+                <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated" style="vertical-align:top;">@AddNewButtonText</button>
                 }
 
                 @if (OrderOptions.Count() > 0)
                 {
-                    <span class="@(ShowAddNewButton ? "ml-2 ml-md-3 " : "")mr-md-2 my-2">
-                        <span class="mr-1">@Localization.OrderByText</span>
-                        <select id="pagecount" class="select-css select-buttonheight mr-md-2 my-2" @onchange="OnSelectOrder">
-                            @foreach (var item in OrderOptions)
+                <span class="@(ShowAddNewButton ? "ml-2 ms-2 ml-md-3 ms-md-3 " : "")mr-md-2 me-md-2 my-2">
+                    <span class="mr-1 me-1">@Localization.OrderByText</span>
+                    <select id="currentOrder" class="form-control form-select mr-md-2 me-md-2 my-2 pe-5" @onchange="OnSelectOrder" style="display:inline;width:auto;">
+                        @foreach (var item in OrderOptions)
                             {
-                                <option value="@item.Id">@item.DisplayText</option>
+                        <option value="@item.Id">@item.DisplayText</option>
                             }
-                        </select>
-                    </span>
+                    </select>
+                </span>
                 }
 
                 @if (ShowFilterButton)
                 {
-                    <button class="btn btn-info my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-target="#grid-filter">
-                        @if (IsFilterActive)
-                        {
-                            <i class="@Localization.FilterEnabledIcon"></i>
-                        }
-                        else
-                        {
-                            <i class="@Localization.FilterDisabledIcon"></i>
-                        }
-                        @Localization.FilterButtonText
-                    </button>
+                   @if (!IsFilterActive)
+                   {
+                   <button class="btn btn-secondary my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#grid-filter" data-bs-target="#grid-filter" style="vertical-align:top;">
+                       @if (IsFilterActive)
+                       {
+                          <i class="@Localization.FilterEnabledIcon"></i>
+                       }
+                       else
+                       {
+                          <i class="@Localization.FilterDisabledIcon"></i>
+                       }
+      
+                       <span class="ml-2 m-2">
+                          @Localization.FilterButtonText
+                       </span>
+                   </button>
+                   }
 
-                    <div id="grid-filter" class="collapse my-2">
-                        @FilterTemplate
-                    </div>
+                <div id="grid-filter" class="collapse my-2">
+                    @FilterTemplate
+                </div>
                 }
             </div>
 
@@ -59,7 +67,7 @@ else
                 <div class="col text-md-right">
                     @foreach (var action in ActionButtons)
                     {
-                        <button type="button" class="btn btn-secondary my-1 ml-1" @onclick="@(e => ExecuteActionButton(action))">@action.Text</button>
+                        <button type="button" class="btn btn-secondary my-1 ml-1 ms-1" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">@action.Text</button>
                     }
                 </div>
             }
@@ -79,7 +87,7 @@ else
             @if (ListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                    <table class="table mr-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+                    <table class="table mr-2 me-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
                         <thead class="@HeaderClass">
                             <tr>
                                 @if (Expandable)
@@ -144,7 +152,7 @@ else
                                         @foreach (var column in Columns)
                                         {
                                             var style = ComputeStyle(column, item);
-                                            var className = ComputeClass(column);
+                                            var className = ComputeClass(column, CellClass);
 
                                             @if (column.Template == null)
                                             {
@@ -245,7 +253,7 @@ else
                     @if (CanChangePageSize)
                     {
                         <label for="pagecount">@Localization.ItemsPerPage</label>
-                        <select id="pagecount" class="ml-2 form-control" style="display:inline;width:5rem;" @bind="ActivePageSize">
+                        <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
                             <option value="15">15</option>
                             <option value="30">30</option>
                             <option value="50">50</option>
@@ -258,7 +266,7 @@ else
                     <ul class="pagination justify-content-md-end mt-2 mt-sm-0">
                         <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
                             <div class="page-link mg-pager-button text-nowrap" @onclick="MoveBack">
-                                <i class="fas fa-chevron-left mr-2"></i> @Localization.PreviousButtonText
+                                <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
                             </div>
                         </li>
                         <li class="page-item disabled">
@@ -268,7 +276,7 @@ else
                         </li>
                         <li class="page-item@(!HasMoreData ? " disabled" : "")">
                             <div class="page-link mg-pager-button text-nowrap" @onclick="MoveNext">
-                                @Localization.NextButtonText <i class="fas fa-chevron-right ml-2"></i>
+                                @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
                             </div>
                         </li>
                     </ul>

@@ -349,7 +349,7 @@ namespace MoonGrid
             }
             else if (column.Alignment == ColumnAlignment.Right)
             {
-                classNames.Append(" text-right");
+                classNames.Append(" text-right text-end");
             }
 
             return classNames.ToString();

@@ -16,49 +16,49 @@ else
     <div class="container-fluid" id="@Id">
         <div class="row">
 
-            <div class="col-auto row-cols-auto g-3">
+            <div class="col-auto row-cols-auto">
 
                 @if (ShowAddNewButton)
                 {
-                <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated" style="vertical-align:top;">@AddNewButtonText</button>
+                    <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated" style="vertical-align:top;">@AddNewButtonText</button>
                 }
 
                 @if (OrderOptions.Count() > 0)
                 {
-                <span class="@(ShowAddNewButton ? "ml-2 ms-2 ml-md-3 ms-md-3 " : "")mr-md-2 me-md-2 my-2">
-                    <span class="mr-1 me-1">@Localization.OrderByText</span>
-                    <select id="currentOrder" class="form-control form-select mr-md-2 me-md-2 my-2 pe-5" @onchange="OnSelectOrder" style="display:inline;width:auto;">
-                        @foreach (var item in OrderOptions)
+                    <span class="@(ShowAddNewButton ? "ml-2 ms-2 ml-md-3 ms-md-3 " : "")mr-md-2 me-md-2 my-2">
+                        <span class="mr-1 me-1">@Localization.OrderByText</span>
+                        <select id="currentOrder" class="form-control form-select mr-md-2 me-md-2 my-2 pe-5" @onchange="OnSelectOrder" style="display:inline;width:auto;">
+                            @foreach (var item in OrderOptions)
                             {
-                        <option value="@item.Id">@item.DisplayText</option>
+                                <option value="@item.Id">@item.DisplayText</option>
                             }
-                    </select>
-                </span>
+                        </select>
+                    </span>
                 }
 
                 @if (ShowFilterButton)
                 {
-                   @if (!IsFilterActive)
-                   {
-                   <button class="btn btn-secondary my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#grid-filter" data-bs-target="#grid-filter" style="vertical-align:top;">
-                       @if (IsFilterActive)
-                       {
-                          <i class="@Localization.FilterEnabledIcon"></i>
-                       }
-                       else
-                       {
-                          <i class="@Localization.FilterDisabledIcon"></i>
-                       }
-      
-                       <span class="ml-2 m-2">
-                          @Localization.FilterButtonText
-                       </span>
-                   </button>
-                   }
+                    @if (!IsFilterActive)
+                    {
+                        <button class="btn btn-secondary my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#grid-filter" data-bs-target="#grid-filter" style="vertical-align:top;">
+                            @if (IsFilterActive)
+                            {
+                                <i class="@Localization.FilterEnabledIcon"></i>
+                            }
+                            else
+                            {
+                                <i class="@Localization.FilterDisabledIcon"></i>
+                            }
 
-                <div id="grid-filter" class="collapse my-2">
-                    @FilterTemplate
-                </div>
+                            <span class="ml-2 m-2">
+                                @Localization.FilterButtonText
+                            </span>
+                        </button>
+                    }
+
+                    <div id="grid-filter" class="collapse my-2">
+                        @FilterTemplate
+                    </div>
                 }
             </div>
 

@@ -73,9 +73,9 @@
         DataGrid.UpdateItem(FirstElement);
     }
 
-    void DeleteItem()
+    async Task DeleteItem()
     {
-        if (DataGrid.DeleteItem(FirstElement))
+        if (await DataGrid.RemoveItem(FirstElement))
         {
             _products.Remove(FirstElement);
             FirstElement = _products.FirstOrDefault();

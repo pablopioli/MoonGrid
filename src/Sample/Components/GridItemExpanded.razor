@@ -1,6 +1,14 @@
 ﻿<h3>@Product.Name</h3>
 <p>You can get additional details of the product and show them here.</p>
 
+<button @onclick="Remove">Remove</button>
+
 @code {
     [Parameter] public Product Product { get; set; }
+    [CascadingParameter] public Grid<Product> ContainerGrid { get; set; }
+
+    async Task Remove()
+    {
+        await ContainerGrid.RemoveItem(Product);
+    }
 }

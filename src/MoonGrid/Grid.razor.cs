@@ -482,10 +482,8 @@ namespace MoonGrid
             return true;
         }
 
-        public bool DeleteItem(TItem item)
+        public async Task<bool> RemoveItem(TItem item)
         {
-            var indexF = Array.IndexOf(FixedData, item);
-
             var indexD = -1;
             for (int i = 0; i < Data.Length; i++)
             {
@@ -496,45 +494,27 @@ namespace MoonGrid
                 }
             }
 
-            if (indexF == -1 || indexD == -1)
+            if (indexD == -1)
             {
                 return false;
             }
 
-            FixedData = FixedData.Take(indexF)
-                                 .Concat(FixedData.Skip(indexF + 1))
-                                 .ToArray();
+            var indexF = Array.IndexOf(FixedData, item);
+            if (indexF != -1)
+            {
+                FixedData = FixedData.Take(indexF)
+                                     .Concat(FixedData.Skip(indexF + 1))
+                                     .ToArray();
+            }
 
             Data = Data.Take(indexD)
                        .Concat(Data.Skip(indexD + 1))
                        .ToArray();
 
-            StateHasChanged();
-
-            return true;
-        }
-
-        public bool RemoveItem(TItem item)
-        {
-            var indexF = Array.IndexOf(FixedData, item);
-
-            var indexD = -1;
-            for (int i = 0; i < Data.Length; i++)
+            if (Data.Length == 0)
             {
-                if (ReferenceEquals(Data[i].Item, item))
-                {
-                    indexD = i;
-                    break;
-                }
+                await Refresh();
             }
-
-            if (indexF == -1 || indexD == -1)
-            {
-                return false;
-            }
-
-            FixedData[indexF] = item;
-            Data[indexD].Key = Guid.NewGuid();
 
             StateHasChanged();
 

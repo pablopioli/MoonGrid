@@ -186,7 +186,9 @@ else
                                     {
                                         <tr>
                                             <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="moongrid-additional-row">
-                                                @row.Content
+                                                <CascadingValue Value="@this">
+                                                    @row.Content
+                                                </CascadingValue>
                                             </td>
                                         </tr>
                                     }

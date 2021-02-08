@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,7 @@ namespace MoonGrid
         [Parameter] public string CellClass { get; set; } = "";
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
+        [Inject] private ILogger<Grid<TITem>> Logger { get; set; }
 
         public string ErrorText { get; private set; }
 
@@ -151,6 +153,19 @@ namespace MoonGrid
         private async Task EventCallbacks_OnFilterStatusChanged(bool isActive)
         {
             IsFilterActive = isActive;
+
+            if (!isActive)
+            {
+                try
+                {
+                    await JsModule.InvokeVoidAsync("collapseFilter", "collapse-" + Id);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex.ToString());
+                }
+            }
+
             await UpdateCurrentData();
             StateHasChanged();
         }

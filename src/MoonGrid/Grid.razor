@@ -40,7 +40,7 @@ else
                 {
                     @if (!IsFilterActive)
                     {
-                        <button class="btn btn-secondary my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#grid-filter" data-bs-target="#grid-filter" style="vertical-align:top;">
+                        <button class="btn btn-secondary my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
                             @if (IsFilterActive)
                             {
                                 <i class="@Localization.FilterEnabledIcon"></i>
@@ -56,7 +56,7 @@ else
                         </button>
                     }
 
-                    <div id="grid-filter" class="collapse my-2">
+                    <div id="collapse-@Id" class="collapse my-2">
                         @FilterTemplate
                     </div>
                 }

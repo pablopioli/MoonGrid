@@ -44,11 +44,11 @@ namespace MoonGrid
         [Parameter] public string CellClass { get; set; } = "";
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
-        [Inject] private ILogger<Grid<TITem>> Logger { get; set; }
+        [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
 
         public string ErrorText { get; private set; }
 
-        private string Id = Guid.NewGuid().ToString().Replace("-", "");
+        private readonly string Id = Guid.NewGuid().ToString().Replace("-", "");
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
         private TItem CurrentRow;
         private TItem[] FixedData { get; set; } = Array.Empty<TItem>();
@@ -60,10 +60,15 @@ namespace MoonGrid
         private bool IsInDetailMode { get; set; }
         private IEnumerable<TItem> UsedDataItems { get; set; }
 
-        private string AnchorToScroll;
+        private string AnchorToScrollTop;
+        private string AnchorToScrollBottom;
+
         public string ActivePageSize
         {
-            get { return QueryOptions.PageSize.ToString(); }
+            get
+            {
+                return QueryOptions.PageSize.ToString();
+            }
             set
             {
                 QueryOptions.PageSize = int.Parse(value);
@@ -72,7 +77,7 @@ namespace MoonGrid
                 Dispatcher.CreateDefault().InvokeAsync(async () =>
                 {
                     await UpdateCurrentData();
-                    AnchorToScroll = Id + "-pager";
+                    AnchorToScrollBottom = Id + "-pager";
                 });
             }
         }
@@ -89,6 +94,7 @@ namespace MoonGrid
         }
 
         private bool hasEventBinded;
+        private bool hasPageSizeSetted;
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
@@ -100,21 +106,26 @@ namespace MoonGrid
                 hasEventBinded = true;
             }
 
-            if (InitialPageSize == 15)
+            if (!hasPageSizeSetted)
             {
-                QueryOptions.PageSize = 15;
-            }
-            else if (InitialPageSize == 30)
-            {
-                QueryOptions.PageSize = 30;
-            }
-            else if (InitialPageSize == 50)
-            {
-                QueryOptions.PageSize = 50;
-            }
-            else if (InitialPageSize == 100)
-            {
-                QueryOptions.PageSize = 100;
+                if (InitialPageSize == 15)
+                {
+                    QueryOptions.PageSize = 15;
+                }
+                else if (InitialPageSize == 30)
+                {
+                    QueryOptions.PageSize = 30;
+                }
+                else if (InitialPageSize == 50)
+                {
+                    QueryOptions.PageSize = 50;
+                }
+                else if (InitialPageSize == 100)
+                {
+                    QueryOptions.PageSize = 100;
+                }
+
+                hasPageSizeSetted = true;
             }
 
             if (DataItems != null && !ReferenceEquals(DataItems, UsedDataItems))
@@ -137,10 +148,16 @@ namespace MoonGrid
             }
             else
             {
-                if (!string.IsNullOrEmpty(AnchorToScroll))
+                if (!string.IsNullOrEmpty(AnchorToScrollTop))
                 {
-                    await JsModule.InvokeVoidAsync("goToAnchorBottom", AnchorToScroll);
-                    AnchorToScroll = null;
+                    await JsModule.InvokeVoidAsync("goToAnchor", AnchorToScrollTop);
+                    AnchorToScrollTop = null;
+                }
+
+                if (!string.IsNullOrEmpty(AnchorToScrollBottom))
+                {
+                    await JsModule.InvokeVoidAsync("goToAnchorBottom", AnchorToScrollBottom);
+                    AnchorToScrollBottom = null;
                 }
             }
         }
@@ -220,7 +237,7 @@ namespace MoonGrid
                 QueryOptions.CallBack = null;
             }
 
-            var result = await DataSource.Invoke(QueryOptions);
+            var result = await DataSource.Invoke(QueryOptions.CreateCopy());
 
             if (!AsynchronousLoading)
             {
@@ -575,6 +592,72 @@ namespace MoonGrid
             }
 
             return Task.FromResult(result);
+        }
+
+        public async Task<bool> BringElementIntoView(Func<TItem, bool> selector)
+        {
+            try
+            {
+                QueryOptions.PageNumber = 1;
+                var found = false;
+
+                while (true)
+                {
+                    var result = await DataSource.Invoke(QueryOptions.CreateCopy());
+
+                    if (!string.IsNullOrEmpty(result.Error))
+                    {
+                        UpdateUiWithResult(result);
+                        break;
+                    }
+
+                    var element = result.ResultData.FirstOrDefault(x => selector(x));
+                    if (element != null)
+                    {
+                        found = true;
+                        UpdateUiWithResult(result);
+
+                        var processedItem = Data.FirstOrDefault(x => object.ReferenceEquals(x.Item, element));
+                        if (processedItem != null)
+                        {
+                            AnchorToScrollTop = processedItem.Key.ToString();
+                        }
+
+                        break;
+                    }
+
+                    if (!result.HasMoreData)
+                    {
+                        UpdateUiWithResult(result);
+                        break;
+                    }
+
+                    QueryOptions.PageNumber++;
+                }
+
+                return found;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex.ToString());
+                return false;
+            }
+        }
+
+        public async Task<bool> ExpandElement(Func<TItem, bool> selector)
+        {
+            var item = Data.FirstOrDefault(x => selector(x.Item));
+
+            if (item == null)
+            {
+                return false;
+            }
+
+            item.Expanded = true;
+            await ExpandItem(item);
+            StateHasChanged();
+
+            return true;
         }
 
         private bool hasDisposed;

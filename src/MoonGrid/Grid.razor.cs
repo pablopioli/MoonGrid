@@ -33,6 +33,7 @@ namespace MoonGrid
         [Parameter] public RenderFragment DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<TItem> ListViewTemplate { get; set; }
         [Parameter] public RenderFragment<TItem> AdditionalRowTemplate { get; set; }
+        [Parameter] public RenderFragment NewButtonTemplate { get; set; }
         [Parameter] public int InitialPageSize { get; set; } = 30;
         [Parameter] public bool CanChangePageSize { get; set; } = true;
         [Parameter] public string TableClass { get; set; } = "";
@@ -87,7 +88,14 @@ namespace MoonGrid
         {
             await base.OnInitializedAsync();
 
-            JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/_content/MoonGrid/moongrid.js");
+            try
+            {
+                JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/_content/MoonGrid/moongrid.js");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
             ActionLauncher.OnShowDetailsRequested += ActionLauncher_OnShowDetailsRequested;
             ActionLauncher.OnShowMasterRequested += ActionLauncher_OnShowMasterRequested;
@@ -148,16 +156,23 @@ namespace MoonGrid
             }
             else
             {
-                if (!string.IsNullOrEmpty(AnchorToScrollTop))
+                try
                 {
-                    await JsModule.InvokeVoidAsync("goToAnchor", AnchorToScrollTop);
-                    AnchorToScrollTop = null;
-                }
+                    if (!string.IsNullOrEmpty(AnchorToScrollTop))
+                    {
+                        await JsModule.InvokeVoidAsync("goToAnchor", AnchorToScrollTop);
+                        AnchorToScrollTop = null;
+                    }
 
-                if (!string.IsNullOrEmpty(AnchorToScrollBottom))
+                    if (!string.IsNullOrEmpty(AnchorToScrollBottom))
+                    {
+                        await JsModule.InvokeVoidAsync("goToAnchorBottom", AnchorToScrollBottom);
+                        AnchorToScrollBottom = null;
+                    }
+                }
+                catch (Exception ex)
                 {
-                    await JsModule.InvokeVoidAsync("goToAnchorBottom", AnchorToScrollBottom);
-                    AnchorToScrollBottom = null;
+                    Console.WriteLine(ex);
                 }
             }
         }

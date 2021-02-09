@@ -20,7 +20,16 @@ else
 
                 @if (ShowAddNewButton)
                 {
-                    <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated" style="vertical-align:top;">@AddNewButtonText</button>
+                    <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated" style="vertical-align:top;">
+                        @if (NewButtonTemplate == null)
+                        {
+                            @AddNewButtonText
+                        }
+                        else
+                        {
+                            @NewButtonTemplate
+                        }
+                    </button>
                 }
 
                 @if (OrderOptions.Count() > 0)
@@ -92,7 +101,7 @@ else
 
     else
     {
-        <div class="container-fluid my-2">
+        <div class="container-fluid mb-2">
             @if (ListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">

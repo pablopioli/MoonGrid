@@ -20,7 +20,7 @@ else
 
                 @if (ShowAddNewButton)
                 {
-                    <button type="button" class="btn btn-primary my-2" @onclick="OnNewButtonActivated" style="vertical-align:top;">
+                    <button type="button" class="btn btn-primary my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
                         @if (NewButtonTemplate == null)
                         {
                             @AddNewButtonText
@@ -49,7 +49,7 @@ else
                 {
                     @if (!IsFilterActive)
                     {
-                        <button class="btn btn-secondary my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
+                        <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
                             @if (IsFilterActive)
                             {
                                 <i class="@Localization.FilterEnabledIcon"></i>
@@ -71,12 +71,12 @@ else
                 }
             </div>
 
-            @if (ActionButtons.Count > 0)
+            @if (ActionButtons.Count > 0 || ActionToolbar != null)
             {
                 <div class="col text-md-right text-md-end">
                     @foreach (var action in ActionButtons)
                     {
-                        <button type="button" class="btn btn-secondary my-2 ml-1 ms-1" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">
+                        <button type="button" class="btn btn-secondary my-2 ml-1 ms-1@(SmallButtons ? " btn-sm" : "")" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">
                             @if (action.ContentTemplate != null)
                             {
                                 @action.ContentTemplate
@@ -86,6 +86,15 @@ else
                                 @action.Text
                             }
                         </button>
+                    }
+
+                    @if (ActionToolbar != null)
+                    {
+                        <div class="my-2">
+                            <CascadingValue Value="@this">
+                                @ActionToolbar
+                            </CascadingValue>
+                        </div>
                     }
                 </div>
             }

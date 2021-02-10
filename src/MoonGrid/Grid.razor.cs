@@ -16,6 +16,7 @@ namespace MoonGrid
         [Parameter] public ICollection<OrderOption> OrderOptions { get; set; } = Array.Empty<OrderOption>();
         [Parameter] public ICollection<ActionButton> ActionButtons { get; set; } = Array.Empty<ActionButton>();
         [Parameter] public ICollection<GridColumn<TItem>> Columns { get; set; } = Array.Empty<GridColumn<TItem>>();
+        [Parameter] public RenderFragment ActionToolbar { get; set; }
         [Parameter] public EventCallback OnNewItem { get; set; }
         [Parameter] public bool ShowAddNewButton { get; set; }
         [Parameter] public string AddNewButtonText { get; set; } = "Nuevo";
@@ -43,6 +44,7 @@ namespace MoonGrid
         [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;
         [Parameter] public IEnumerable<TItem> DataItems { get; set; }
         [Parameter] public string CellClass { get; set; } = "";
+        [Parameter] public bool SmallButtons { get; set; }
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
@@ -333,9 +335,11 @@ namespace MoonGrid
             StateHasChanged();
         }
 
-        public async Task Refresh()
+        public async Task<bool> Refresh()
         {
             await UpdateCurrentData();
+
+            return string.IsNullOrEmpty(ErrorText);
         }
 
         public string ComputeHeaderStyle(GridColumn<TItem> column)

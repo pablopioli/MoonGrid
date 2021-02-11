@@ -1,9 +1,15 @@
 ﻿export function goToAnchor(id) {
-    document.getElementById(id).scrollIntoView();
+    var element = document.getElementById(id);
+    if (element != null) {
+        element.scrollIntoView();
+    }
 }
 
 export function goToAnchorBottom(id) {
-    document.getElementById(id).scrollIntoView(false);
+    var element = document.getElementById(id);
+    if (element != null) {
+        element.scrollIntoView(false);
+    }
 }
 
 export function collapseFilter(id) {

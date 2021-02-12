@@ -7,7 +7,7 @@
 <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
                ShowFilterButton="true" EventCallbacks="@EventCallbacks"
                OrderOptions="OrderOptions" ActionButtons="Actions"
-               FreezeFirstColumn="true">
+               FreezeFirstColumn="true" InitialOrder="@InitialOrder">
     <FilterTemplate>
         <div class="form-inline">
             @if (IsFilterActive)
@@ -38,6 +38,8 @@
     public bool IsFilterActive;
     public string CategoryFilter;
     public EventCallbacks EventCallbacks = new EventCallbacks();
+
+    public string InitialOrder { get; set; } = "price";
 
     public ICollection<OrderOption> OrderOptions = new List<OrderOption>
 {

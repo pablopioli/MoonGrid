@@ -20,7 +20,7 @@ else
 
                 @if (ShowAddNewButton)
                 {
-                    <button type="button" class="btn btn-primary my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
+                    <button type="button" class="btn btn-primary mr-2 me-2 my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
                         @if (NewButtonTemplate == null)
                         {
                             @AddNewButtonText
@@ -34,9 +34,12 @@ else
 
                 @if (OrderOptions.Count() > 0)
                 {
-                    <span class="@(ShowAddNewButton ? "ml-2 ms-2 ml-md-3 ms-md-3 " : "")mr-md-2 me-md-2 my-2">
-                        <span class="mr-1 me-1">@Localization.OrderByText</span>
-                        <select id="currentOrder" class="form-control form-select mr-md-2 me-md-2 my-2 pe-5" @onchange="OnSelectOrder" style="display:inline;width:auto;">
+                    <span class="mr-1 me-1" style="display:inline-block">
+                        <svg style="display:inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M10.082 5.629L9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371h-1.781zm1.57-.785L11 2.687h-.047l-.652 2.157h1.351z" />
+                            <path d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645V14zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293V2.5z" />
+                        </svg>
+                        <select id="currentOrder" class="form-control form-select mr-2 me-2 my-2 pe-5@(SmallButtons ? " btn-sm" : "")" @bind="ActiveOrder" style="display:inline-block;width:auto;">
                             @foreach (var item in OrderOptions)
                             {
                                 <option value="@item.Id">@item.DisplayText</option>
@@ -49,7 +52,7 @@ else
                 {
                     @if (!IsFilterActive)
                     {
-                        <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2@(ShowAddNewButton || OrderOptions.Count() > 0 ? " mx-md-2" : "")" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
+                        <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
                             @if (IsFilterActive)
                             {
                                 <i class="@Localization.FilterEnabledIcon"></i>
@@ -293,14 +296,14 @@ else
 
                 <div class="col-sm">
                     <ul class="pagination justify-content-md-end mt-2 mt-sm-0">
-                        <li class="page-item@(QueryOptions.PageNumber <= 1 ? " disabled" : "")">
+                        <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
                             <div class="page-link mg-pager-button text-nowrap" @onclick="MoveBack">
                                 <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
                             </div>
                         </li>
                         <li class="page-item disabled">
                             <div class="page-link text-nowrap">
-                                @(string.Format(Localization.PageNumberText, QueryOptions.PageNumber))
+                                @(string.Format(Localization.PageNumberText, _pageNumber))
                             </div>
                         </li>
                         <li class="page-item@(!HasMoreData ? " disabled" : "")">

@@ -5,7 +5,6 @@
         public English()
         {
             FilterButtonText = "Filter";
-            OrderByText = "Order by";
             ItemsPerPage = "Items per page";
             PreviousButtonText = "Previous";
             NextButtonText = "Next";

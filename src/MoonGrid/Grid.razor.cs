@@ -44,8 +44,10 @@ namespace MoonGrid
         [Parameter] public IEnumerable<TItem> DataItems { get; set; }
         [Parameter] public string CellClass { get; set; } = "";
         [Parameter] public bool SmallButtons { get; set; }
-        [Parameter] public int PageSize { get; set; }
+        [Parameter] public int InitialPageSize { get; set; }
+        [Parameter] public string InitialOrder { get; set; }
         [Parameter] public EventCallback<int> OnPageSizeChanged { get; set; }
+        [Parameter] public EventCallback<string> OnOrderChanged { get; set; }
         [Parameter] public ElementSelector<TItem> AutoSelectElement { get; set; }
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
@@ -57,7 +59,6 @@ namespace MoonGrid
         private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
         private TItem CurrentRow;
         private TItem[] FixedData { get; set; } = Array.Empty<TItem>();
-        private QueryOptions<TItem> QueryOptions { get; set; } = new QueryOptions<TItem>();
         private bool HasMoreData { get; set; }
         private bool IsFilterActive { get; set; }
         private bool Loading { get; set; }
@@ -68,30 +69,53 @@ namespace MoonGrid
         private string AnchorToScrollTop;
         private string AnchorToScrollBottom;
 
+        private int _pageNumber = 1;
         private List<int> PageSizes { get; } = new List<int> { 15, 30, 50, 100 };
 
-        private int _pageSize = 30;
+        private int _activePageSize = 30;
         public string ActivePageSize
         {
             get
             {
-                return _pageSize.ToString();
+                return _activePageSize.ToString();
             }
             set
             {
                 var pageSize = int.Parse(value);
-                if (pageSize != _pageSize)
+                if (pageSize != _activePageSize)
                 {
-                    _pageSize = pageSize;
+                    _activePageSize = pageSize;
 
                     Dispatcher.CreateDefault().InvokeAsync(async () =>
                     {
-                        QueryOptions.PageNumber = 1;
+                        _pageNumber = 1;
 
-                        await OnPageSizeChanged.InvokeAsync(_pageSize);
                         await UpdateCurrentData();
+                        await OnPageSizeChanged.InvokeAsync(_activePageSize);
 
                         AnchorToScrollBottom = Id + "-pager";
+                    });
+                }
+            }
+        }
+
+        private string _activeOrder = "";
+        public string ActiveOrder
+        {
+            get
+            {
+                return _activeOrder.ToString();
+            }
+            set
+            {
+                if (!string.Equals(_activeOrder, value))
+                {
+                    _activeOrder = value;
+
+                    Dispatcher.CreateDefault().InvokeAsync(async () =>
+                    {
+                        await UpdateCurrentData();
+                        await OnOrderChanged.InvokeAsync(_activeOrder);
                     });
                 }
             }
@@ -102,19 +126,26 @@ namespace MoonGrid
         {
             base.OnInitialized();
 
-            if (PageSize > 0)
+            if (InitialPageSize > 0)
             {
-                if (!PageSizes.Contains(PageSize))
+                if (!PageSizes.Contains(InitialPageSize))
                 {
-                    PageSizes.Add(PageSize);
+                    PageSizes.Add(InitialPageSize);
                 }
 
-                _pageSize = PageSize;
+                _activePageSize = InitialPageSize;
             }
 
-            if (OrderOptions.Count > 0)
+            if (string.IsNullOrEmpty(InitialOrder))
             {
-                QueryOptions.Order = OrderOptions.First().Id;
+                if (OrderOptions.Count >= 1)
+                {
+                    _activeOrder = OrderOptions.First().Id;
+                }
+            }
+            else
+            {
+                _activeOrder = InitialOrder;
             }
 
             ActionLauncher.OnShowDetailsRequested += ActionLauncher_OnShowDetailsRequested;
@@ -261,21 +292,28 @@ namespace MoonGrid
                 StateHasChanged();
             }
 
+            var queryOptions = CreateQueryOptions();
             if (AsynchronousLoading)
             {
-                QueryOptions.CallBack = ProcessCallbackResult;
-            }
-            else
-            {
-                QueryOptions.CallBack = null;
+                queryOptions.CallBack = ProcessCallbackResult;
             }
 
-            var result = await DataSource.Invoke(QueryOptions.CreateCopy(_pageSize));
+            var result = await DataSource.Invoke(queryOptions);
 
             if (!AsynchronousLoading)
             {
                 UpdateUiWithResult(result);
             }
+        }
+
+        QueryOptions<TItem> CreateQueryOptions()
+        {
+            return new QueryOptions<TItem>
+            {
+                Order = _activeOrder,
+                PageNumber = _pageNumber,
+                PageSize = _activePageSize
+            };
         }
 
         private void ProcessCallbackResult(QueryResult<TItem> result)
@@ -315,17 +353,11 @@ namespace MoonGrid
             StateHasChanged();
         }
 
-        private async Task OnSelectOrder(ChangeEventArgs e)
-        {
-            QueryOptions.Order = e.Value.ToString();
-            await UpdateCurrentData();
-        }
-
         private async Task MoveBack(MouseEventArgs e)
         {
-            if (QueryOptions.PageNumber > 1)
+            if (_pageNumber > 1)
             {
-                QueryOptions.PageNumber--;
+                _pageNumber--;
                 await UpdateCurrentData();
                 await JsModule.InvokeVoidAsync("goToAnchor", Id);
             }
@@ -335,7 +367,7 @@ namespace MoonGrid
         {
             if (HasMoreData)
             {
-                QueryOptions.PageNumber++;
+                _pageNumber++;
                 await UpdateCurrentData();
                 await JsModule.InvokeVoidAsync("goToAnchor", Id);
             }
@@ -647,14 +679,15 @@ namespace MoonGrid
                 AnchorToScrollTop = existingItem.Key;
             }
 
+            var queryOptions = CreateQueryOptions();
             try
             {
-                QueryOptions.PageNumber = 1;
+                queryOptions.PageNumber = 1;
+                _pageNumber = 1;
                 var found = false;
 
                 while (true)
                 {
-                    var queryOptions = QueryOptions.CreateCopy(_pageSize);
                     var result = await DataSource.Invoke(queryOptions);
 
                     if (!string.IsNullOrEmpty(result.Error))
@@ -688,12 +721,15 @@ namespace MoonGrid
                     if (!result.HasMoreData)
                     {
                         queryOptions.PageNumber = 1;
+                        _pageNumber = 1;
+
                         result = await DataSource.Invoke(queryOptions);
                         UpdateUiWithResult(result);
                         break;
                     }
 
-                    QueryOptions.PageNumber++;
+                    queryOptions.PageNumber++;
+                    _pageNumber++;
                 }
 
                 return found;

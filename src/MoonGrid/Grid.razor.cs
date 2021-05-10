@@ -48,6 +48,7 @@ namespace MoonGrid
         [Parameter] public string InitialOrder { get; set; }
         [Parameter] public EventCallback<int> OnPageSizeChanged { get; set; }
         [Parameter] public EventCallback<string> OnOrderChanged { get; set; }
+        [Parameter] public EventCallback OnRefresh { get; set; }
         [Parameter] public ElementSelector<TItem> AutoSelectElement { get; set; }
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
@@ -385,8 +386,8 @@ namespace MoonGrid
 
         public async Task<bool> Refresh()
         {
+            await OnRefresh.InvokeAsync();
             await UpdateCurrentData();
-
             return string.IsNullOrEmpty(ErrorText);
         }
 

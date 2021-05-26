@@ -4,34 +4,36 @@
     <h2>Filter and order data</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
-               ShowFilterButton="true" EventCallbacks="@EventCallbacks"
-               OrderOptions="OrderOptions" ActionButtons="Actions"
-               FreezeFirstColumn="true" InitialOrder="@InitialOrder">
-    <FilterTemplate>
-        <div class="form-inline">
-            @if (IsFilterActive)
-            {
-                <input disabled type="text" class="form-control mb-2 mr-sm-2 me-sm-2" id="filter-name-disabled" @bind="CategoryFilter" style="display:inline;width:auto;">
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
+                   ShowFilterButton="true" EventCallbacks="@EventCallbacks"
+                   OrderOptions="OrderOptions" ActionButtons="Actions"
+                   FreezeFirstColumn="true" InitialOrder="@InitialOrder">
+        <FilterTemplate>
+            <div class="form-inline">
+                @if (IsFilterActive)
+                {
+                    <input disabled type="text" class="form-control mb-2 mr-sm-2 me-sm-2" id="filter-name-disabled" @bind="CategoryFilter" style="display:inline;width:auto;">
 
-                <button type="button" class="mb-2 ml-lg-1 ms-lg-1 btn btn-dark" @onclick="RemoveFilter">
-                    <i class="fas fa-times"></i>
-                    <span class="ml-2 ms-2">Remove filter</span>
-                </button>
-            }
-            else
-            {
-                <span class="mr-2">Filter by category</span>
-                <input type="text" class="form-control mb-2 ms-2 mr-sm-2 me-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category" style="display:inline;width:auto;">
+                    <button type="button" class="mb-2 ml-lg-1 ms-lg-1 btn btn-dark" @onclick="RemoveFilter">
+                        <i class="fas fa-times"></i>
+                        <span class="ml-2 ms-2">Remove filter</span>
+                    </button>
+                }
+                else
+                {
+                    <span class="mr-2">Filter by category</span>
+                    <input type="text" class="form-control mb-2 ms-2 mr-sm-2 me-sm-2" id="filter-name" @bind="CategoryFilter" placeholder="Category" style="display:inline;width:auto;">
 
-                <button type="button" class="mb-2 ml-lg-1 ms-lg-1 btn btn-dark" @onclick="ApplyFilter">
-                    <i class="fas fa-check"></i>
-                    <span class="ml-2 ms-2">Apply</span>
-                </button>
-            }
-        </div>
-    </FilterTemplate>
-</MoonGrid.Grid>
+                    <button type="button" class="mb-2 ml-lg-1 ms-lg-1 btn btn-dark" @onclick="ApplyFilter">
+                        <i class="fas fa-check"></i>
+                        <span class="ml-2 ms-2">Apply</span>
+                    </button>
+                }
+            </div>
+        </FilterTemplate>
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

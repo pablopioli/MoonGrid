@@ -4,9 +4,11 @@
     <h2>Drill down on data</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" HeaderClass="thead-dark"
-               Expandable="true" ItemDetails="GetDetails">
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" HeaderClass="thead-dark"
+                   Expandable="true" ItemDetails="GetDetails">
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

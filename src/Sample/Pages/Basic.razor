@@ -4,8 +4,10 @@
     <h2>Basic sample</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData">
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData">
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

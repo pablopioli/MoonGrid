@@ -14,10 +14,11 @@
     }
 </div>
 
-<MoonGrid.Grid 
-         TItem="Product" Columns="@Columns" @ref="DataGrid" IsPageable="false"
-         HeaderClass="thead-dark" Expandable="true" ItemDetails="GetDetails">
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="DataGrid" IsPageable="false"
+                   HeaderClass="thead-dark" Expandable="true" ItemDetails="GetDetails">
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

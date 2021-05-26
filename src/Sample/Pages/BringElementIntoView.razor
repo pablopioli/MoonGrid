@@ -6,10 +6,12 @@
 
 <button class="btn btn-primary mx-2" @onclick="Find">Find element: @ElementToView.Name</button>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns"
-               DataSource="@GetProductData" @ref="DataGrid"
-               Expandable="true" ItemDetails="GetDetails">
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns"
+                   DataSource="@GetProductData" @ref="DataGrid"
+                   Expandable="true" ItemDetails="GetDetails">
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

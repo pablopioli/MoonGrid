@@ -4,14 +4,16 @@
     <h2>List View</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" DataSource="@GetProductData">
-    <ListViewTemplate Context="Product">
-        <div class="my-2 mx-2">
-            <h3>Product name</h3>
-            <p>@Product.Name</p>
-        </div>
-    </ListViewTemplate>
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" DataSource="@GetProductData">
+        <ListViewTemplate Context="Product">
+            <div class="my-2 mx-2">
+                <h3>Product name</h3>
+                <p>@Product.Name</p>
+            </div>
+        </ListViewTemplate>
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public Task<QueryResult<Product>> GetProductData(QueryOptions<Product> queryOptions)

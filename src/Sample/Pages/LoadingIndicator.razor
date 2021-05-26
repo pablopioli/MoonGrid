@@ -4,11 +4,13 @@
     <h2>Loading indicator</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductDataSlow">
-    <LoadingTemplate>
-        <p>Loading ...</p>
-    </LoadingTemplate>
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductDataSlow">
+        <LoadingTemplate>
+            <p>Loading ...</p>
+        </LoadingTemplate>
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

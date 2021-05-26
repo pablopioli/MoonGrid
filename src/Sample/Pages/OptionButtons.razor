@@ -5,10 +5,12 @@
     <h2>Option buttons</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
-               ShowAddNewButton="true" AddNewButtonText="New Product" OnNewItem="NewItem"
-               ActionButtons="Actions">
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
+                   ShowAddNewButton="true" AddNewButtonText="New Product" OnNewItem="NewItem"
+                   ActionButtons="Actions">
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

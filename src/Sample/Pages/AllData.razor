@@ -4,8 +4,10 @@
     <h2>Provide all data on load</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="DataGrid" DataItems="Products">
-</MoonGrid.Grid>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" @ref="DataGrid" DataItems="Products">
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

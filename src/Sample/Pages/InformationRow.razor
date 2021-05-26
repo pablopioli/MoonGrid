@@ -4,23 +4,25 @@
     <h2>Information Row</h2>
 </div>
 
-<MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" 
-               HeaderClass="thead-dark" CellClass="raw-cell">
-    <AdditionalRowTemplate Context="product">
-        <div class="alert alert-primary" role="alert" style="max-width: 40rem">
-            More information about @product.Name
-        </div>
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData"
+                   HeaderClass="thead-dark" CellClass="raw-cell">
+        <AdditionalRowTemplate Context="product">
+            <div class="alert alert-primary" role="alert" style="max-width: 40rem">
+                More information about @product.Name
+            </div>
 
-        <button type="button" class="btn btn-primary mb-3">
-            Notifications <span class="badge badge-light">@Random.Next(1, 5)</span>
-        </button>
+            <button type="button" class="btn btn-primary mb-3">
+                Notifications <span class="badge badge-light">@Random.Next(1, 5)</span>
+            </button>
 
-        @code 
+            @code
         {
-            public Random Random { get; set; } = new Random();
-        }
-    </AdditionalRowTemplate>
-</MoonGrid.Grid>
+                public Random Random { get; set; } = new Random();
+            }
+        </AdditionalRowTemplate>
+    </MoonGrid.Grid>
+</div>
 
 @code {
     public GridColumn<Product>[] Columns;

@@ -13,94 +13,97 @@
 }
 else
 {
-    <div class="row" id="@Id">
+    @if (ShowAddNewButton || OrderOptions.Count() > 0 || ShowFilterButton || (ActionButtons.Count > 0 || ActionToolbar != null))
+    {
+        <div class="row" id="@Id">
 
-        <div class="col-auto row-cols-auto moongrid-action-bar">
+            <div class="col-auto row-cols-auto moongrid-action-bar">
 
-            @if (ShowAddNewButton)
-            {
-                <button type="button" class="btn btn-primary mr-2 me-2 my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
-                    @if (NewButtonTemplate == null)
-                    {
-                        @AddNewButtonText
-                    }
-                    else
-                    {
-                        @NewButtonTemplate
-                    }
-                </button>
-            }
-
-            @if (OrderOptions.Count() > 0)
-            {
-                <span class="mr-1 me-1" style="display:inline-block">
-                    <svg style="display:inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M10.082 5.629L9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371h-1.781zm1.57-.785L11 2.687h-.047l-.652 2.157h1.351z" />
-                        <path d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645V14zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293V2.5z" />
-                    </svg>
-                    <select id="currentOrder" class="form-control form-select mr-2 me-2 my-2 pe-5@(SmallButtons ? " btn-sm" : "")" @bind="ActiveOrder" style="display:inline-block;width:auto;">
-                        @foreach (var item in OrderOptions)
-                        {
-                            <option value="@item.Id">@item.DisplayText</option>
-                        }
-                    </select>
-                </span>
-            }
-
-            @if (ShowFilterButton)
-            {
-                @if (!IsFilterActive)
+                @if (ShowAddNewButton)
                 {
-                    <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
-                        @if (IsFilterActive)
+                    <button type="button" class="btn btn-primary mr-2 me-2 my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
+                        @if (NewButtonTemplate == null)
                         {
-                            <i class="@Localization.FilterEnabledIcon"></i>
+                            @AddNewButtonText
                         }
                         else
                         {
-                            <i class="@Localization.FilterDisabledIcon"></i>
-                        }
-
-                        <span class="ml-2 m-2">
-                            @Localization.FilterButtonText
-                        </span>
-                    </button>
-                }
-
-                <div id="collapse-@Id" class="collapse my-2">
-                    @FilterTemplate
-                </div>
-            }
-        </div>
-
-        @if (ActionButtons.Count > 0 || ActionToolbar != null)
-        {
-            <div class="col text-md-right text-md-end">
-                @foreach (var action in ActionButtons)
-                {
-                    <button type="button" class="btn btn-secondary my-2 ml-1 ms-1@(SmallButtons ? " btn-sm" : "")" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">
-                        @if (action.ContentTemplate != null)
-                        {
-                            @action.ContentTemplate
-                        }
-                        else
-                        {
-                            @action.Text
+                            @NewButtonTemplate
                         }
                     </button>
                 }
 
-                @if (ActionToolbar != null)
+                @if (OrderOptions.Count() > 0)
                 {
-                    <div class="my-2">
-                        <CascadingValue Value="@this">
-                            @ActionToolbar
-                        </CascadingValue>
+                    <span class="mr-1 me-1" style="display:inline-block">
+                        <svg style="display:inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M10.082 5.629L9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371h-1.781zm1.57-.785L11 2.687h-.047l-.652 2.157h1.351z" />
+                            <path d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645V14zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293V2.5z" />
+                        </svg>
+                        <select id="currentOrder" class="form-control form-select mr-2 me-2 my-2 pe-5@(SmallButtons ? " btn-sm" : "")" @bind="ActiveOrder" style="display:inline-block;width:auto;">
+                            @foreach (var item in OrderOptions)
+                            {
+                                <option value="@item.Id">@item.DisplayText</option>
+                            }
+                        </select>
+                    </span>
+                }
+
+                @if (ShowFilterButton)
+                {
+                    @if (!IsFilterActive)
+                    {
+                        <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
+                            @if (IsFilterActive)
+                            {
+                                <i class="@Localization.FilterEnabledIcon"></i>
+                            }
+                            else
+                            {
+                                <i class="@Localization.FilterDisabledIcon"></i>
+                            }
+
+                            <span class="ml-2 m-2">
+                                @Localization.FilterButtonText
+                            </span>
+                        </button>
+                    }
+
+                    <div id="collapse-@Id" class="collapse my-2">
+                        @FilterTemplate
                     </div>
                 }
             </div>
-        }
-    </div>
+
+            @if (ActionButtons.Count > 0 || ActionToolbar != null)
+            {
+                <div class="col text-md-right text-md-end">
+                    @foreach (var action in ActionButtons)
+                    {
+                        <button type="button" class="btn btn-secondary my-2 ml-1 ms-1@(SmallButtons ? " btn-sm" : "")" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">
+                            @if (action.ContentTemplate != null)
+                            {
+                                @action.ContentTemplate
+                            }
+                            else
+                            {
+                                @action.Text
+                            }
+                        </button>
+                    }
+
+                    @if (ActionToolbar != null)
+                    {
+                        <div class="my-2">
+                            <CascadingValue Value="@this">
+                                @ActionToolbar
+                            </CascadingValue>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
 
     if (!Loading && string.IsNullOrEmpty(ErrorText) && Data.Length == 0 && NoDataTemplate != null)
     {

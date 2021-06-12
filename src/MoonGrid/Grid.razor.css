@@ -28,32 +28,29 @@
     border-top: 0px;
     }
 
-.downchevron:after {
-    content: '\2BC6';
+.moongrid-table-coolfreeze {
 }
 
-.upchevron:after {
-    content: '\2BC5';
-}
-
-.mg-table-coolfreeze {
-}
-
-    .mg-table-coolfreeze th:first-child,
-    .mg-table-coolfreeze td:first-child {
+    .moongrid-table-coolfreeze th:first-child,
+    .moongrid-table-coolfreeze td:first-child {
         position: sticky;
         left: 0px;
         z-index: 1;
     }
 
-    .mg-table-coolfreeze th {
+    .moongrid-table-coolfreeze th {
         transform: scale(0.999);
     }
 
-    .mg-table-coolfreeze td {
+    .moongrid-table-coolfreeze td {
         transform: scale(0.999);
     }
 
-.mg-pager-button {
+.moongrid-pager-button {
     user-select: none;
+}
+
+.moongrid-pager-number
+{
+    color: inherit;
 }

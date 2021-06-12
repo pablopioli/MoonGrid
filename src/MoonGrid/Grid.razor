@@ -13,9 +13,11 @@
 }
 else
 {
+    <div id="@Id"></div>
+
     @if (ShowAddNewButton || OrderOptions.Count() > 0 || ShowFilterButton || (ActionButtons.Count > 0 || ActionToolbar != null))
     {
-        <div class="row" id="@Id">
+        <div class="row">
 
             <div class="col-auto row-cols-auto moongrid-action-bar">
 
@@ -118,7 +120,7 @@ else
             @if (ListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                    <table class="table mr-2 me-2 table-sm moongrid-table@(FreezeFirstColumn ? " mg-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
+                    <table class="table mr-2 me-2 table-sm moongrid-table@(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
                         <thead class="@HeaderClass">
                             <tr>
                                 @if (Expandable)
@@ -278,13 +280,41 @@ else
         </div>
     }
 
-    @if (Data.Length > 0 && IsPageable)
+    @if (Data.Length > 0 && IsPageable && !(_pageNumber == 1 && !HasMoreData))
     {
         <div class="row my-1">
-            <div class="col-auto">
-                <div class="moongrid-pagesize">
-                    @if (CanChangePageSize)
+            <div class="col-12 col-sm-6">
+                <ul class="pagination moongrid-pager mb-2">
+                    @if (!HideInactivePager || _pageNumber > 1)
                     {
+                        <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
+                            <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
+                                <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
+                            </div>
+                        </li>
+                    }
+
+                    <li class="page-item">
+                        <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
+                            @(string.Format(Localization.PageNumberText, _pageNumber))
+                        </div>
+                    </li>
+
+                    @if (!HideInactivePager || HasMoreData)
+                    {
+                        <li class="page-item@(!HasMoreData ? " disabled" : "")">
+                            <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
+                                @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            @if (CanChangePageSize)
+            {
+                <div class="col-12 col-sm-6 text-sm-end">
+                    <div class="moongrid-pagesize mb-2">
                         <label for="pagecount">@Localization.ItemsPerPage</label>
                         <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
                             @foreach (var pageSize in PageSizes.OrderBy(x => x))
@@ -292,31 +322,11 @@ else
                                 <option value="@pageSize">@pageSize</option>
                             }
                         </select>
-                    }
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-sm">
-                <ul class="pagination moongrid-pager justify-content-md-end mt-2 mt-sm-0">
-                    <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
-                        <div class="page-link mg-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
-                            <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
-                        </div>
-                    </li>
-                    <li class="page-item disabled">
-                        <div class="page-link text-nowrap moongrid-pager-number">
-                            @(string.Format(Localization.PageNumberText, _pageNumber))
-                        </div>
-                    </li>
-                    <li class="page-item@(!HasMoreData ? " disabled" : "")">
-                        <div class="page-link mg-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
-                            @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            }
         </div>
 
-        <div style="clear:both" id="@Id-pager"></div>
+        <div id="@Id-pager"></div>
     }
 }

@@ -35,7 +35,7 @@ namespace MoonGrid
         [Parameter] public RenderFragment<TItem> ListViewTemplate { get; set; }
         [Parameter] public RenderFragment<TItem> AdditionalRowTemplate { get; set; }
         [Parameter] public RenderFragment NewButtonTemplate { get; set; }
-        [Parameter] public bool CanChangePageSize { get; set; } = true;
+        [Parameter] public bool CanChangePageSize { get; set; } = false;
         [Parameter] public string TableClass { get; set; } = "";
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
@@ -50,6 +50,7 @@ namespace MoonGrid
         [Parameter] public EventCallback<string> OnOrderChanged { get; set; }
         [Parameter] public EventCallback OnRefresh { get; set; }
         [Parameter] public ElementSelector<TItem> AutoSelectElement { get; set; }
+        [Parameter] public bool HideInactivePager { get; set; } = true;
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }

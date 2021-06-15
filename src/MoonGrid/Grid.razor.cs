@@ -23,6 +23,7 @@ namespace MoonGrid
         [Parameter] public bool ShowFilterButton { get; set; }
         [Parameter] public bool IsPageable { get; set; } = true;
         [Parameter] public bool Expandable { get; set; }
+        [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool ShowTableFooter { get; set; }
         [Parameter] public bool FreezeFirstColumn { get; set; }
         [Parameter] public Func<QueryOptions<TItem>, Task<QueryResult<TItem>>> DataSource { get; set; }

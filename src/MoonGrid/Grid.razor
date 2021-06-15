@@ -1,7 +1,6 @@
 ﻿@typeparam TItem
 
 <link href="/_content/MoonGrid/MoonGrid.bundle.scp.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
 @if (IsInDetailMode)
 {
@@ -120,24 +119,27 @@ else
             @if (ListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                    <table class="table mr-2 me-2 table-sm moongrid-table@(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)" style="font-family:'Lato', sans-serif;">
-                        <thead class="@HeaderClass">
-                            <tr>
-                                @if (Expandable)
-                                {
-                                    <th></th>
-                                }
+                    <table class="table mr-2 me-2 table-sm moongrid-table@(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)">
+                        @if (ShowTableHeader)
+                        {
+                            <thead class="@HeaderClass">
+                                <tr>
+                                    @if (Expandable)
+                                    {
+                                        <th></th>
+                                    }
 
-                                @foreach (var column in Columns)
-                                {
-                                    var style = ComputeHeaderStyle(column);
-                                    var className = ComputeClass(column);
-                                    <th style="@style" class="@className">
-                                        @column.Title
-                                    </th>
-                                }
-                            </tr>
-                        </thead>
+                                    @foreach (var column in Columns)
+                                    {
+                                        var style = ComputeHeaderStyle(column);
+                                        var className = ComputeClass(column);
+                                        <th style="@style" class="@className">
+                                            @column.Title
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                        }
 
                         @if (Loading)
                         {

@@ -15,5 +15,6 @@
         public string PreviousButtonText { get; set; } = "Previous";
         public string NextButtonText { get; set; } = "Next";
         public string PageNumberText { get; set; } = "Page {0}";
+        public string LoadMore { get; set; } = "Load more";
     }
 }

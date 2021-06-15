@@ -9,6 +9,7 @@
             PreviousButtonText = "Anterior";
             NextButtonText = "Siguiente";
             PageNumberText = "Página {0}";
+            LoadMore = "Mostrar más";
         }
     }
 }

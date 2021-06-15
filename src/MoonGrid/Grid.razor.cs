@@ -22,6 +22,7 @@ namespace MoonGrid
         [Parameter] public string AddNewButtonText { get; set; } = "Nuevo";
         [Parameter] public bool ShowFilterButton { get; set; }
         [Parameter] public bool IsPageable { get; set; } = true;
+        [Parameter] public PagingStyle PagingStyle { get; set; } = PagingStyle.Buttons;
         [Parameter] public bool Expandable { get; set; }
         [Parameter] public bool ShowTableHeader { get; set; } = true;
         [Parameter] public bool ShowTableFooter { get; set; }
@@ -59,7 +60,7 @@ namespace MoonGrid
         public string ErrorText { get; private set; }
 
         private readonly string Id = Guid.NewGuid().ToString().Replace("-", "");
-        private DisplayableItem<TItem>[] Data { get; set; } = Array.Empty<DisplayableItem<TItem>>();
+        private List<DisplayableItem<TItem>> Data { get; set; } = new List<DisplayableItem<TItem>>();
         private TItem CurrentRow;
         private TItem[] FixedData { get; set; } = Array.Empty<TItem>();
         private bool HasMoreData { get; set; }
@@ -73,6 +74,7 @@ namespace MoonGrid
         private string AnchorToScrollBottom;
 
         private int _pageNumber = 1;
+        private bool _addingItems;
         private List<int> PageSizes { get; } = new List<int> { 15, 30, 50, 100 };
 
         private int _activePageSize = 30;
@@ -282,7 +284,7 @@ namespace MoonGrid
             return Task.CompletedTask;
         }
 
-        private async Task UpdateCurrentData()
+        private async Task UpdateCurrentData(bool addingItems = false)
         {
             if (DataSource == null)
             {
@@ -300,6 +302,8 @@ namespace MoonGrid
             {
                 queryOptions.CallBack = ProcessCallbackResult;
             }
+
+            _addingItems = addingItems;
 
             var result = await DataSource.Invoke(queryOptions);
 
@@ -326,9 +330,12 @@ namespace MoonGrid
 
         private void UpdateUiWithResult(QueryResult<TItem> result)
         {
+            var addingItems = _addingItems;
+            _addingItems = false;
+
             if (!string.IsNullOrEmpty(result.Error))
             {
-                Data = Array.Empty<DisplayableItem<TItem>>();
+                Data = new List<DisplayableItem<TItem>>();
                 HasMoreData = false;
                 ErrorText = result.Error;
             }
@@ -338,11 +345,20 @@ namespace MoonGrid
 
                 if (result.ResultData == null)
                 {
-                    Data = Array.Empty<DisplayableItem<TItem>>();
+                    Data = new List<DisplayableItem<TItem>>();
                 }
                 else
                 {
-                    Data = result.ResultData.Select(x => new DisplayableItem<TItem>(x)).ToArray();
+                    var data = result.ResultData.Select(x => new DisplayableItem<TItem>(x)).ToList();
+
+                    if (addingItems)
+                    {
+                        Data.AddRange(data);
+                    }
+                    else
+                    {
+                        Data = data;
+                    }
                 }
 
                 HasMoreData = result.HasMoreData;
@@ -517,7 +533,7 @@ namespace MoonGrid
             var anchorItem = FixedData[indexF];
 
             var indexD = -1;
-            for (int i = 0; i < Data.Length; i++)
+            for (int i = 0; i < Data.Count; i++)
             {
                 if (ReferenceEquals(Data[i].Item, anchorItem))
                 {
@@ -543,13 +559,13 @@ namespace MoonGrid
                 Data = Data.Take(indexD + 1)
                            .Concat(new[] { displayableItem })
                            .Concat(Data.Skip(indexD + 1))
-                           .ToArray();
+                           .ToList();
             }
             else
             {
                 FixedData = new[] { item }.Concat(FixedData).ToArray();
 
-                Data = new[] { displayableItem }.Concat(Data).ToArray();
+                Data = new[] { displayableItem }.Concat(Data).ToList();
             }
 
             StateHasChanged();
@@ -562,7 +578,7 @@ namespace MoonGrid
             var indexF = Array.IndexOf(FixedData, item);
 
             var indexD = -1;
-            for (int i = 0; i < Data.Length; i++)
+            for (int i = 0; i < Data.Count; i++)
             {
                 if (ReferenceEquals(Data[i].Item, item))
                 {
@@ -587,7 +603,7 @@ namespace MoonGrid
         public async Task<bool> RemoveItem(TItem item)
         {
             var indexD = -1;
-            for (int i = 0; i < Data.Length; i++)
+            for (int i = 0; i < Data.Count; i++)
             {
                 if (ReferenceEquals(Data[i].Item, item))
                 {
@@ -611,9 +627,9 @@ namespace MoonGrid
 
             Data = Data.Take(indexD)
                        .Concat(Data.Skip(indexD + 1))
-                       .ToArray();
+                       .ToList();
 
-            if (Data.Length == 0)
+            if (Data.Count == 0)
             {
                 await Refresh();
             }
@@ -757,6 +773,15 @@ namespace MoonGrid
             StateHasChanged();
 
             return true;
+        }
+
+        public async Task LoadMore()
+        {
+            if (HasMoreData)
+            {
+                _pageNumber++;
+                await UpdateCurrentData(true);
+            }
         }
 
         public void Dispose()

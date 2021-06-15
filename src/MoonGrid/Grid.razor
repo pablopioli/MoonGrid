@@ -106,7 +106,7 @@ else
         </div>
     }
 
-    if (!Loading && string.IsNullOrEmpty(ErrorText) && Data.Length == 0 && NoDataTemplate != null)
+    if (!Loading && string.IsNullOrEmpty(ErrorText) && Data.Count == 0 && NoDataTemplate != null)
     {
         <div class="my-2 float-left">
             @NoDataTemplate
@@ -141,7 +141,7 @@ else
                             </thead>
                         }
 
-                        @if (Loading)
+                        @if (Loading && !_addingItems)
                         {
                             @LoadingTemplate
                         }
@@ -229,7 +229,8 @@ else
                                     }
                                 }
                             </tbody>
-                            @if (Data.Length > 0 && ShowTableFooter)
+
+                            @if (Data.Count > 0 && ShowTableFooter)
                             {
                                 <tfoot>
                                     <tr>
@@ -244,13 +245,18 @@ else
                                     </tr>
                                 </tfoot>
                             }
+
+                            @if (Loading && _addingItems)
+                            {
+                                @LoadingTemplate
+                            }
                         }
                     </table>
                 </div>
             }
             else
             {
-                @if (Loading)
+                @if (Loading && !_addingItems)
                 {
                     @LoadingTemplate
                 }
@@ -277,57 +283,72 @@ else
                             @ListViewTemplate(item)
                         </div>
                     }
+
+                    @if (Loading && _addingItems)
+                    {
+                        @LoadingTemplate
+                    }
                 }
             }
         </div>
     }
 
-    @if (Data.Length > 0 && IsPageable && !(_pageNumber == 1 && !HasMoreData))
+    @if (Data.Count > 0 && IsPageable && !(_pageNumber == 1 && !HasMoreData))
     {
-        <div class="row my-1">
-            <div class="col-12 col-sm-6">
-                <ul class="pagination moongrid-pager mb-2">
-                    @if (!HideInactivePager || _pageNumber > 1)
-                    {
-                        <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
-                            <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
-                                <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
+        @if (PagingStyle == PagingStyle.Buttons)
+        {
+            <div class="row my-1">
+                <div class="col-12 col-sm-6">
+                    <ul class="pagination moongrid-pager mb-2">
+                        @if (!HideInactivePager || _pageNumber > 1)
+                        {
+                            <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
+                                <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
+                                    <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
+                                </div>
+                            </li>
+                        }
+
+                        <li class="page-item">
+                            <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
+                                @(string.Format(Localization.PageNumberText, _pageNumber))
                             </div>
                         </li>
-                    }
 
-                    <li class="page-item">
-                        <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
-                            @(string.Format(Localization.PageNumberText, _pageNumber))
-                        </div>
-                    </li>
-
-                    @if (!HideInactivePager || HasMoreData)
-                    {
-                        <li class="page-item@(!HasMoreData ? " disabled" : "")">
-                            <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
-                                @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
-                            </div>
-                        </li>
-                    }
-                </ul>
-            </div>
-
-            @if (CanChangePageSize)
-            {
-                <div class="col-12 col-sm-6 text-sm-end">
-                    <div class="moongrid-pagesize mb-2">
-                        <label for="pagecount">@Localization.ItemsPerPage</label>
-                        <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
-                            @foreach (var pageSize in PageSizes.OrderBy(x => x))
-                            {
-                                <option value="@pageSize">@pageSize</option>
-                            }
-                        </select>
-                    </div>
+                        @if (!HideInactivePager || HasMoreData)
+                        {
+                            <li class="page-item@(!HasMoreData ? " disabled" : "")">
+                                <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
+                                    @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
+                                </div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            }
-        </div>
+
+                @if (CanChangePageSize)
+                {
+                    <div class="col-12 col-sm-6 text-sm-end">
+                        <div class="moongrid-pagesize mb-2">
+                            <label for="pagecount">@Localization.ItemsPerPage</label>
+                            <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
+                                @foreach (var pageSize in PageSizes.OrderBy(x => x))
+                                {
+                                    <option value="@pageSize">@pageSize</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (PagingStyle == PagingStyle.LoadMore && HasMoreData && !Loading)
+        {
+            <div class="text-center my-3">
+                <button class="btn btn-dark" @onclick="LoadMore">@Localization.LoadMore</button>
+            </div>
+        }
 
         <div id="@Id-pager"></div>
     }

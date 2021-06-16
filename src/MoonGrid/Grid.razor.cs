@@ -404,8 +404,14 @@ namespace MoonGrid
 
         public async Task<bool> Refresh()
         {
-            await OnRefresh.InvokeAsync();
+            if (PagingStyle == PagingStyle.LoadMore)
+            {
+                Data = new List<DisplayableItem<TItem>>();
+            }
+
             await UpdateCurrentData();
+            await OnRefresh.InvokeAsync();
+
             return string.IsNullOrEmpty(ErrorText);
         }
 

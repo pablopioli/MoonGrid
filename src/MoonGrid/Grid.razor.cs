@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 
 namespace MoonGrid
 {
@@ -53,11 +53,10 @@ namespace MoonGrid
         [Parameter] public EventCallback OnRefresh { get; set; }
         [Parameter] public ElementSelector<TItem> AutoSelectElement { get; set; }
         [Parameter] public bool HideInactivePager { get; set; } = true;
+        [Parameter] public string ErrorText { get; set; }
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
-
-        public string ErrorText { get; private set; }
 
         private readonly string Id = Guid.NewGuid().ToString().Replace("-", "");
         private List<DisplayableItem<TItem>> Data { get; set; } = new List<DisplayableItem<TItem>>();

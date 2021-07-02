@@ -119,7 +119,7 @@ else
             @if (ListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                    <table class="table mr-2 me-2 table-sm moongrid-table@(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "") @((!Expandable && AdditionalRowTemplate == null) ? " moongrid-table-striped" : "") @(TableClass)">
+                    <table class="table mr-2 me-2 @(TableClass) @(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "")">
                         @if (ShowTableHeader)
                         {
                             <thead class="@HeaderClass">
@@ -164,7 +164,7 @@ else
 
                         else
                         {
-                            <tbody>
+                            <tbody class="@BodyClass">
                                 @foreach (var row in Data)
                                 {
                                     var item = row.Item;
@@ -232,7 +232,7 @@ else
 
                             @if (Data.Count > 0 && ShowTableFooter)
                             {
-                                <tfoot>
+                                <tfoot class="@FooterClass">
                                     <tr>
                                         @foreach (var column in Columns)
                                         {

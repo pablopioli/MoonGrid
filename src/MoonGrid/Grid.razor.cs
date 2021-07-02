@@ -38,8 +38,10 @@ namespace MoonGrid
         [Parameter] public RenderFragment<TItem> AdditionalRowTemplate { get; set; }
         [Parameter] public RenderFragment NewButtonTemplate { get; set; }
         [Parameter] public bool CanChangePageSize { get; set; } = false;
-        [Parameter] public string TableClass { get; set; } = "";
+        [Parameter] public string TableClass { get; set; } = "table-sm moongrid-table moongrid-table-striped";
         [Parameter] public string HeaderClass { get; set; } = "";
+        [Parameter] public string BodyClass { get; set; } = "";
+        [Parameter] public string FooterClass { get; set; } = "";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
         [Parameter] public bool AsynchronousLoading { get; set; } = false;
         [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;

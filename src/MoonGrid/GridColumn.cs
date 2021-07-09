@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Components;
 
 namespace MoonGrid
 {
@@ -8,6 +8,7 @@ namespace MoonGrid
         public string Title { get; set; }
         public Func<T, string> Source { get; set; }
         public Type Template { get; set; }
+        public Func<T, RenderFragment> FragmentBuilder { get; set; }
         public ColumnAlignment Alignment { get; set; } = ColumnAlignment.Left;
         public ColumnWidth MinWidth { get; set; }
         public ColumnWidth MaxWidth { get; set; }

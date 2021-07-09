@@ -58,6 +58,7 @@ namespace MoonGrid
         [Parameter] public ElementSelector<TItem> AutoSelectElement { get; set; }
         [Parameter] public bool HideInactivePager { get; set; } = true;
         [Parameter] public string ErrorText { get; set; }
+        [Parameter] public Dictionary<string, object> MoonGridOptions { get; set; } = new Dictionary<string, object>();
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
@@ -69,7 +70,7 @@ namespace MoonGrid
         private bool HasMoreData { get; set; }
         private bool IsFilterActive { get; set; }
         private bool Loading { get; set; }
-        private ActionLauncher ActionLauncher { get; set; } = new ActionLauncher();
+        private ActionLauncher<TItem> ActionLauncher { get; set; } = new ActionLauncher<TItem>();
         private bool IsInDetailMode { get; set; }
         private IEnumerable<TItem> UsedDataItems { get; set; }
 
@@ -264,7 +265,7 @@ namespace MoonGrid
             await UpdateCurrentData();
         }
 
-        private Task ActionLauncher_OnShowDetailsRequested(object row)
+        private Task ActionLauncher_OnShowDetailsRequested(TItem row)
         {
             try
             {
@@ -274,13 +275,29 @@ namespace MoonGrid
             {
                 CurrentRow = default;
             }
+
             IsInDetailMode = true;
+
             StateHasChanged();
+
             return Task.CompletedTask;
         }
 
-        private Task ActionLauncher_OnShowMasterRequested()
+        private Task ActionLauncher_OnShowMasterRequested(Func<IEnumerable<TItem>, TItem> selector)
         {
+            if (selector != null)
+            {
+                var itemToSelect = selector(Data.Select(x => x.Item));
+                if (itemToSelect != null)
+                {
+                    var internalItem = Data.FirstOrDefault(x => object.ReferenceEquals(x.Item, itemToSelect));
+                    if (internalItem != null)
+                    {
+                        AnchorToScrollTop = internalItem.Key;
+                    }
+                }
+            }
+
             IsInDetailMode = false;
             StateHasChanged();
             CurrentRow = default;

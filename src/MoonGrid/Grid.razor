@@ -172,7 +172,7 @@ else
                                     <tr @key=key id="@key">
                                         @if (Expandable)
                                         {
-                                            <td>
+                                            <td class="@ExpandChevronClass">
                                                 @if (row.Expanded)
                                                 {
                                                     <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
@@ -212,7 +212,7 @@ else
                                     @if (AdditionalRowTemplate != null)
                                     {
                                         <tr>
-                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="moongrid-additional-row">
+                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="@ExpandedItemClass">
                                                 @AdditionalRowTemplate(item)
                                             </td>
                                         </tr>
@@ -220,7 +220,7 @@ else
                                     else if (row.Expanded)
                                     {
                                         <tr>
-                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="moongrid-additional-row">
+                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="@ExpandedItemClass">
                                                 <CascadingValue Value="@this">
                                                     @row.Content
                                                 </CascadingValue>

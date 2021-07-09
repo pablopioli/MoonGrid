@@ -42,6 +42,8 @@ namespace MoonGrid
         [Parameter] public string HeaderClass { get; set; } = "";
         [Parameter] public string BodyClass { get; set; } = "";
         [Parameter] public string FooterClass { get; set; } = "";
+        [Parameter] public string ExpandedItemClass { get; set; } = "moongrid-additional-row";
+        [Parameter] public string ExpandChevronClass { get; set; } = "moongrid-chevron-class";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
         [Parameter] public bool AsynchronousLoading { get; set; } = false;
         [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;

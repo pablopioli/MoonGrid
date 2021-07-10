@@ -9,6 +9,7 @@ namespace MoonGrid
         public Func<T, string> Source { get; set; }
         public Type Template { get; set; }
         public Func<T, RenderFragment> FragmentBuilder { get; set; }
+        public string CssClass { get; set; } = string.Empty;
         public ColumnAlignment Alignment { get; set; } = ColumnAlignment.Left;
         public ColumnWidth MinWidth { get; set; }
         public ColumnWidth MaxWidth { get; set; }

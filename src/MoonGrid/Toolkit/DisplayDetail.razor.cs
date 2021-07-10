@@ -17,14 +17,12 @@ namespace MoonGrid.Toolkit
 
         string GetClassName()
         {
-            const string KeyName = "MoonGrid.DisplayDetail.Class";
-
-            if (MoonGridOptions != null && MoonGridOptions.ContainsKey(KeyName))
+            if (MoonGridOptions != null && MoonGridOptions.ContainsKey(OptionNames.DisplayDetailClass))
             {
-                return MoonGridOptions[KeyName].ToString();
+                return MoonGridOptions[OptionNames.DisplayDetailClass].ToString();
             }
 
             return ClassName;
+        }
     }
-}
 }

@@ -58,7 +58,7 @@ namespace MoonGrid
         [Parameter] public ElementSelector<TItem> AutoSelectElement { get; set; }
         [Parameter] public bool HideInactivePager { get; set; } = true;
         [Parameter] public string ErrorText { get; set; }
-        [Parameter] public Dictionary<string, object> MoonGridOptions { get; set; } = new Dictionary<string, object>();
+        [Parameter] public Dictionary<string, object> CascadedOptions { get; set; } = new Dictionary<string, object>();
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
@@ -481,6 +481,11 @@ namespace MoonGrid
         public string ComputeClass(GridColumn<TItem> column, string additionalClasses = null)
         {
             var classNames = new StringBuilder("moongrid-cell");
+
+            if (!string.IsNullOrEmpty(column.CssClass))
+            {
+                classNames.Append(" " + column.CssClass);
+            }
 
             if (!string.IsNullOrEmpty(additionalClasses))
             {

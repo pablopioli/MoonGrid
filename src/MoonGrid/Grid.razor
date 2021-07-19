@@ -13,7 +13,7 @@
     }
     else
     {
-        <div id="@Id"></div>
+        <div id="@Id" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")"></div>
 
         @if (ShowAddNewButton || OrderOptions.Count() > 0 || ShowFilterButton || (ActionButtons.Count > 0 || ActionToolbar != null))
         {
@@ -170,7 +170,7 @@
                                     {
                                         var item = row.Item;
                                         var key = row.Key;
-                                        <tr @key=key id="@key">
+                                        <tr @key=key id="@key" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")">
                                             @if (Expandable)
                                             {
                                                 <td class="@ExpandChevronClass">

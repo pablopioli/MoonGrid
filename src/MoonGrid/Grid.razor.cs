@@ -59,6 +59,7 @@ namespace MoonGrid
         [Parameter] public bool HideInactivePager { get; set; } = true;
         [Parameter] public string ErrorText { get; set; }
         [Parameter] public Dictionary<string, object> CascadedOptions { get; set; } = new Dictionary<string, object>();
+        [Parameter] public string ScrollMarginTop { get; set; } = "";
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }

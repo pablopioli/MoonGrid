@@ -120,7 +120,7 @@
                 @if (ListViewTemplate == null)
                 {
                     <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                        <table class="table mr-2 me-2 @(TableClass) @(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "")">
+                        <table class="table moongrid-table mr-2 me-2 @(TableClass) @(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "")">
                             @if (ShowTableHeader)
                             {
                                 <thead class="@HeaderClass">
@@ -170,10 +170,12 @@
                                     {
                                         var item = row.Item;
                                         var key = row.Key;
+                                        var cellClass = row.Expanded ? ExpandedCellClass : CellClass;
+
                                         <tr @key=key id="@key" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")">
                                             @if (Expandable)
                                             {
-                                                <td class="@ExpandChevronClass">
+                                                <td class="@(ExpandChevronClass + (string.IsNullOrEmpty(cellClass) ? string.Empty : " " + cellClass))">
                                                     @if (row.Expanded)
                                                     {
                                                         <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
@@ -188,7 +190,7 @@
                                             @foreach (var column in Columns)
                                             {
                                                 var style = ComputeStyle(column, item);
-                                                var className = ComputeClass(column, CellClass);
+                                                var className = ComputeClass(column, cellClass);
 
                                                 @if (column.Template != null)
                                                 {

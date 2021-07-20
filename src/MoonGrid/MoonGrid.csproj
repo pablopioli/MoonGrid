@@ -6,7 +6,7 @@
     <RepositoryUrl>https://github.com/pablopioli/MoonGrid</RepositoryUrl>
     <Description>Yet another grid for Blazor</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.33</Version>
+    <Version>1.34</Version>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Company>MoonGrid</Company>
   </PropertyGroup>

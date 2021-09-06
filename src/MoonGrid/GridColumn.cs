@@ -6,6 +6,7 @@ namespace MoonGrid
     public class GridColumn<T> : ComponentBase
     {
         public string Title { get; set; }
+        public Type TitleTemplate { get; set; }
         public Func<T, string> Source { get; set; }
         public Type Template { get; set; }
         public Func<T, RenderFragment> FragmentBuilder { get; set; }
@@ -14,6 +15,7 @@ namespace MoonGrid
         public ColumnWidth MinWidth { get; set; }
         public ColumnWidth MaxWidth { get; set; }
         public Func<T, string> DynamicStyle { get; set; }
+        public object CustomData { get; set; }
 
         public GridColumn()
         { }

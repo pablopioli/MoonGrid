@@ -135,7 +135,17 @@
                                             var style = ComputeHeaderStyle(column);
                                             var className = ComputeClass(column);
                                             <th style="@style" class="@className">
-                                                @column.Title
+                                                @if (column.TitleTemplate != null)
+                                                {
+                                                    RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.TitleTemplate); builder.CloseComponent(); };
+                                                    <CascadingValue Name="CustomData" Value="@column.CustomData">
+                                                        @renderFragment
+                                                    </CascadingValue>
+                                                }
+                                                else
+                                                {
+                                                    @column.Title
+                                                }
                                             </th>
                                         }
                                     </tr>

@@ -61,6 +61,7 @@ namespace MoonGrid
         [Parameter] public string ErrorText { get; set; }
         [Parameter] public Dictionary<string, object> CascadedOptions { get; set; } = new Dictionary<string, object>();
         [Parameter] public string ScrollMarginTop { get; set; } = "";
+        [Parameter] public List<int> PageSizes { get; set; } = new List<int> { 15, 30, 50, 100 };
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
@@ -81,7 +82,6 @@ namespace MoonGrid
 
         private int _pageNumber = 1;
         private bool _addingItems;
-        private List<int> PageSizes { get; } = new List<int> { 15, 30, 50, 100 };
 
         private int _activePageSize = 30;
         public string ActivePageSize

@@ -1,12 +1,12 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.Logging;
-using Microsoft.JSInterop;
 
 namespace MoonGrid
 {
@@ -115,7 +115,7 @@ namespace MoonGrid
         {
             get
             {
-                return _activeOrder.ToString();
+                return _activeOrder;
             }
             set
             {
@@ -186,6 +186,7 @@ namespace MoonGrid
         private async Task CreateJsModule()
         {
             JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "/_content/MoonGrid/moongrid.js");
+            await JsModule.InvokeVoidAsync("addCss", "/_content/MoonGrid/MoonGrid.bundle.scp.css");
         }
 
         protected override void OnParametersSet()
@@ -201,7 +202,7 @@ namespace MoonGrid
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (firstRender && AutoSelectElement != null && AutoSelectElement.CanSelectElement)
+            if (firstRender && AutoSelectElement?.CanSelectElement == true)
             {
                 await BringElementIntoView(AutoSelectElement.Selector, AutoSelectElement.Expand);
                 _needsLoadData = false;
@@ -254,7 +255,7 @@ namespace MoonGrid
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex.ToString());
+                    Logger.LogError("Error changing filter status {description}", ex.Message);
                 }
             }
 
@@ -292,7 +293,7 @@ namespace MoonGrid
                 var itemToSelect = selector(Data.Select(x => x.Item));
                 if (itemToSelect != null)
                 {
-                    var internalItem = Data.FirstOrDefault(x => object.ReferenceEquals(x.Item, itemToSelect));
+                    var internalItem = Data.Find(x => object.ReferenceEquals(x.Item, itemToSelect));
                     if (internalItem != null)
                     {
                         AnchorToScrollTop = internalItem.Key;
@@ -394,7 +395,7 @@ namespace MoonGrid
             StateHasChanged();
         }
 
-        private async Task MoveBack(MouseEventArgs e)
+        private async Task MoveBack(MouseEventArgs _)
         {
             if (_pageNumber > 1)
             {
@@ -404,7 +405,7 @@ namespace MoonGrid
             }
         }
 
-        private async Task MoveNext(MouseEventArgs e)
+        private async Task MoveNext(MouseEventArgs _)
         {
             if (HasMoreData)
             {
@@ -414,7 +415,7 @@ namespace MoonGrid
             }
         }
 
-        private void ExecuteActionButton(ActionButton actionButton)
+        private static void ExecuteActionButton(ActionButton actionButton)
         {
             actionButton.Action.Invoke();
         }
@@ -443,12 +444,12 @@ namespace MoonGrid
 
             if (column.MinWidth != null)
             {
-                style.Append($"min-width:{column.MinWidth.Width}{GridUnitToText(column.MinWidth.Unit)};");
+                style.Append("min-width:").Append(column.MinWidth.Width).Append(GridUnitToText(column.MinWidth.Unit)).Append(';');
             }
 
             if (column.MaxWidth != null)
             {
-                style.Append($"max-width:{column.MaxWidth.Width}{GridUnitToText(column.MaxWidth.Unit)};");
+                style.Append("max-width:").Append(column.MaxWidth.Width).Append(GridUnitToText(column.MaxWidth.Unit)).Append(';');
             }
 
             return style.ToString();
@@ -460,12 +461,12 @@ namespace MoonGrid
 
             if (column.MinWidth != null)
             {
-                style.Append($"min-width:{column.MinWidth.Width}{GridUnitToText(column.MinWidth.Unit)};");
+                style.Append("min-width:").Append(column.MinWidth.Width).Append(GridUnitToText(column.MinWidth.Unit)).Append(';');
             }
 
             if (column.MaxWidth != null)
             {
-                style.Append($"max-width:{column.MaxWidth.Width}{GridUnitToText(column.MaxWidth.Unit)};");
+                style.Append("max-width:").Append(column.MaxWidth.Width).Append(GridUnitToText(column.MaxWidth.Unit)).Append(';');
             }
 
             if (column.DynamicStyle != null && value != null)
@@ -486,12 +487,12 @@ namespace MoonGrid
 
             if (!string.IsNullOrEmpty(column.CssClass))
             {
-                classNames.Append(" " + column.CssClass);
+                classNames.Append(' ').Append(column.CssClass);
             }
 
             if (!string.IsNullOrEmpty(additionalClasses))
             {
-                classNames.Append(" " + additionalClasses);
+                classNames.Append(' ').Append(additionalClasses);
             }
 
             if (column.Alignment == ColumnAlignment.Center)
@@ -506,7 +507,7 @@ namespace MoonGrid
             return classNames.ToString();
         }
 
-        private string GridUnitToText(WidthUnit unit)
+        private static string GridUnitToText(WidthUnit unit)
         {
             switch (unit)
             {
@@ -518,6 +519,8 @@ namespace MoonGrid
                     return "rem";
                 case WidthUnit.Em:
                     return "em";
+                default:
+                    break;
             }
 
             return string.Empty;
@@ -532,7 +535,7 @@ namespace MoonGrid
             }
         }
 
-        private void ContractItem(DisplayableItem<TItem> item)
+        private static void ContractItem(DisplayableItem<TItem> item)
         {
             item.Expanded = false;
         }
@@ -547,7 +550,7 @@ namespace MoonGrid
 
         public bool AddItem(TItem item)
         {
-            return AddItem(item, default(TItem));
+            return AddItem(item, default);
         }
 
         public bool AddItem(TItem item, TItem afterItem)
@@ -676,13 +679,12 @@ namespace MoonGrid
         {
             var result = new QueryResult<TItem>();
 
-            var orderOption = OrderOptions.Where(x => x.Id == queryOptions.Order).FirstOrDefault();
+            var orderOption = OrderOptions.FirstOrDefault(x => x.Id == queryOptions.Order);
 
             Func<IEnumerable<TItem>, IOrderedEnumerable<TItem>> orderFunction = null;
             if (orderOption != null)
             {
-                var genericOrderOption = orderOption as OrderOption<TItem>;
-                if (genericOrderOption != null)
+                if (orderOption is OrderOption<TItem> genericOrderOption)
                 {
                     orderFunction = genericOrderOption.OrderFunction;
                 }
@@ -725,7 +727,7 @@ namespace MoonGrid
                 return false;
             }
 
-            var existingItem = Data.FirstOrDefault(x => selector(x.Item));
+            var existingItem = Data.Find(x => selector(x.Item));
             if (existingItem != null)
             {
                 AnchorToScrollTop = existingItem.Key;
@@ -759,7 +761,7 @@ namespace MoonGrid
                             await ExpandElement(selector);
                         }
 
-                        var processedItem = Data.FirstOrDefault(x => ReferenceEquals(x.Item, element));
+                        var processedItem = Data.Find(x => ReferenceEquals(x.Item, element));
                         if (processedItem != null)
                         {
                             AnchorToScrollTop = processedItem.Key;
@@ -788,14 +790,14 @@ namespace MoonGrid
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex.ToString());
+                Logger.LogError("Error bringing element into view {cause}", ex.Message);
                 return false;
             }
         }
 
         public async Task<bool> ExpandElement(Func<TItem, bool> selector)
         {
-            var item = Data.FirstOrDefault(x => selector(x.Item));
+            var item = Data.Find(x => selector(x.Item));
 
             if (item == null)
             {

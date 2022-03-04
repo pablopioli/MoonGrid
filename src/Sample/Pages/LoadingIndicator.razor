@@ -5,9 +5,9 @@
 </div>
 
 <div class="container-fluid">
-    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductDataSlow">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductDataSlow" TableClass="table-striped" HeaderClass="table-dark">
         <LoadingTemplate>
-            <p>Loading ...</p>
+            <h3 class="my-2 text-center">Loading ...</h3>
         </LoadingTemplate>
     </MoonGrid.Grid>
 </div>

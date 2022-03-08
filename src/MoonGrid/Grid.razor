@@ -3,25 +3,25 @@
 <CascadingValue Name="MoonGridOptions" Value="CascadedOptions">
     @if (IsInDetailMode)
     {
-            <CascadingValue Value="CurrentRow">
-                <CascadingValue Value="ActionLauncher">
+        <CascadingValue Value="CurrentRow">
+            <CascadingValue Value="ActionLauncher">
                 @DetailsTemplate
-                </CascadingValue>
             </CascadingValue>
+        </CascadingValue>
     }
     else
     {
-            <div id="@Id" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")"></div>
+        <div id="@Id" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")"></div>
 
         @if (ShowAddNewButton || OrderOptions.Count() > 0 || ShowFilterButton || (ActionButtons.Count > 0 || ActionToolbar != null))
         {
-                    <div class="row">
+            <div class="row">
 
-                        <div class="col-auto row-cols-auto moongrid-action-bar">
+                <div class="col-auto row-cols-auto moongrid-action-bar">
 
                     @if (ShowAddNewButton)
                     {
-                                    <button type="button" class="btn btn-primary mr-2 me-2 my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
+                        <button type="button" class="btn btn-primary mr-2 me-2 my-2@(SmallButtons ? " btn-sm" : "")" @onclick="OnNewButtonActivated" style="vertical-align:top;">
                             @if (NewButtonTemplate == null)
                             {
                                 @AddNewButtonText
@@ -30,57 +30,57 @@
                             {
                                 @NewButtonTemplate
                             }
-                                    </button>
+                        </button>
                     }
 
                     @if (OrderOptions.Count() > 0)
                     {
-                                    <span class="mr-1 me-1" style="display:inline-block">
-                                        <svg style="display:inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M10.082 5.629L9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371h-1.781zm1.57-.785L11 2.687h-.047l-.652 2.157h1.351z" />
-                                            <path d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645V14zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293V2.5z" />
-                                        </svg>
-                                        <select id="currentOrder" class="form-control form-select mr-2 me-2 my-2 pe-5@(SmallButtons ? " btn-sm" : "")" @bind="ActiveOrder" style="display:inline-block;width:auto;">
+                        <span class="mr-1 me-1" style="display:inline-block">
+                            <svg style="display:inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sort-alpha-down" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M10.082 5.629L9.664 7H8.598l1.789-5.332h1.234L13.402 7h-1.12l-.419-1.371h-1.781zm1.57-.785L11 2.687h-.047l-.652 2.157h1.351z" />
+                                <path d="M12.96 14H9.028v-.691l2.579-3.72v-.054H9.098v-.867h3.785v.691l-2.567 3.72v.054h2.645V14zM4.5 2.5a.5.5 0 0 0-1 0v9.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L4.5 12.293V2.5z" />
+                            </svg>
+                            <select id="currentOrder" class="form-control form-select mr-2 me-2 my-2 pe-5@(SmallButtons ? " btn-sm" : "")" @bind="ActiveOrder" style="display:inline-block;width:auto;">
                                 @foreach (var item in OrderOptions)
                                 {
-                                                    <option value="@item.Id">@item.DisplayText</option>
+                                    <option value="@item.Id">@item.DisplayText</option>
                                 }
-                                        </select>
-                                    </span>
+                            </select>
+                        </span>
                     }
 
                     @if (ShowFilterButton)
                     {
                         @if (!IsFilterActive)
                         {
-                                            <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
+                            <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
                                 @if (IsFilterActive)
                                 {
-                                                        <i class="@Localization.FilterEnabledIcon"></i>
+                                    <i class="@Localization.FilterEnabledIcon"></i>
                                 }
                                 else
                                 {
-                                                        <i class="@Localization.FilterDisabledIcon"></i>
+                                    <i class="@Localization.FilterDisabledIcon"></i>
                                 }
 
-                                                <span class="ml-2 m-2">
+                                <span class="ml-2 m-2">
                                     @Localization.FilterButtonText
-                                                </span>
-                                            </button>
+                                </span>
+                            </button>
                         }
 
-                                    <div id="collapse-@Id" class="collapse my-2">
+                        <div id="collapse-@Id" class="collapse my-2">
                             @FilterTemplate
-                                    </div>
-                    }
                         </div>
+                    }
+                </div>
 
                 @if (ActionButtons.Count > 0 || ActionToolbar != null)
                 {
-                                <div class="col text-md-right text-md-end">
+                    <div class="col text-md-right text-md-end">
                         @foreach (var action in ActionButtons)
                         {
-                                            <button type="button" class="btn btn-secondary my-2 ml-1 ms-1@(SmallButtons ? " btn-sm" : "")" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">
+                            <button type="button" class="btn btn-secondary my-2 ml-1 ms-1@(SmallButtons ? " btn-sm" : "")" @onclick="@(e => ExecuteActionButton(action))" style="vertical-align:top;">
                                 @if (action.ContentTemplate != null)
                                 {
                                     @action.ContentTemplate
@@ -89,279 +89,277 @@
                                 {
                                     @action.Text
                                 }
-                                            </button>
+                            </button>
                         }
 
                         @if (ActionToolbar != null)
                         {
-                                            <div class="my-2">
-                                                <CascadingValue Value="@this">
+                            <div class="my-2">
+                                <CascadingValue Value="@this">
                                     @ActionToolbar
-                                                </CascadingValue>
-                                            </div>
+                                </CascadingValue>
+                            </div>
                         }
-                                </div>
-                }
                     </div>
+                }
+            </div>
         }
 
         if (!Loading && string.IsNullOrEmpty(ErrorText) && Data.Count == 0 && NoDataTemplate != null)
         {
-                    <div class="my-2 float-left">
+            <div class="my-2 float-left">
                 @NoDataTemplate
-                    </div>
+            </div>
         }
 
         else
         {
-                    <div class="mb-2">
-                @if (ListViewTemplate == null)
-                {
-                                <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
-                                    <table class="table moongrid-table mr-2 me-2 @(TableClass) @(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "")">
-                            @if (ShowTableHeader)
-                            {
-                                                <thead class="@HeaderClass">
-                                                    <tr>
+            @if (ListViewTemplate == null)
+            {
+                <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
+                    <table class="table moongrid-table mr-2 me-2 @(TableClass) @(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "")">
+                        @if (ShowTableHeader)
+                        {
+                            <thead class="@HeaderClass">
+                                <tr>
+                                    @if (Expandable)
+                                    {
+                                        <th></th>
+                                    }
+
+                                    @foreach (var column in Columns)
+                                    {
+                                        var style = ComputeHeaderStyle(column);
+                                        var className = ComputeClass(column);
+                                        <th style="@style" class="@className">
+                                            @if (column.TitleTemplate != null)
+                                            {
+                                                RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.TitleTemplate); builder.CloseComponent(); };
+                                                <CascadingValue Name="CustomData" Value="@column.CustomData">
+                                                    @renderFragment
+                                                </CascadingValue>
+                                            }
+                                            else
+                                            {
+                                                @column.Title
+                                            }
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                        }
+
+                        @if (!Loading && string.IsNullOrEmpty(ErrorText))
+                        {
+                            <tbody class="@BodyClass">
+                                @foreach (var row in Data)
+                                {
+                                    var item = row.Item;
+                                    var key = row.Key;
+                                    var cellClass = row.Expanded ? ExpandedCellClass : CellClass;
+
+                                    <tr @key=key id="@key" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")">
                                         @if (Expandable)
                                         {
-                                                                <th></th>
+                                            <td class="@(ExpandChevronClass + (string.IsNullOrEmpty(cellClass) ? string.Empty : " " + cellClass))">
+                                                @if (row.Expanded)
+                                                {
+                                                    <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
+                                                }
+                                            </td>
                                         }
 
                                         @foreach (var column in Columns)
                                         {
+                                            var style = ComputeStyle(column, item);
+                                            var className = ComputeClass(column, cellClass);
+
+                                            @if (column.Template != null)
+                                            {
+                                                RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
+                                                <td style="@style" class="@className">
+                                                    <CascadingValue Value="@item">
+                                                        <CascadingValue Value="ActionLauncher">
+                                                            @renderFragment
+                                                        </CascadingValue>
+                                                    </CascadingValue>
+                                                </td>
+                                            }
+                                            else if (column.FragmentBuilder != null)
+                                            {
+                                                <td style="@style" class="@className">
+                                                    <CascadingValue Value="@item">
+                                                        <CascadingValue Value="ActionLauncher">
+                                                            @column.FragmentBuilder(item)
+                                                        </CascadingValue>
+                                                    </CascadingValue>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td style="@style" class="@className">
+                                                    @column.Source.Invoke(item)
+                                                </td>
+                                            }
+                                        }
+                                    </tr>
+
+                                    @if (AdditionalRowTemplate != null)
+                                    {
+                                        <tr>
+                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="@ExpandedItemClass">
+                                                @AdditionalRowTemplate(item)
+                                            </td>
+                                        </tr>
+                                    }
+                                    else if (row.Expanded)
+                                    {
+                                        <tr>
+                                            <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="@ExpandedItemClass">
+                                                <CascadingValue Value="@this">
+                                                    @row.Content
+                                                </CascadingValue>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+
+                            @if (Data.Count > 0 && ShowTableFooter)
+                            {
+                                <tfoot class="@FooterClass">
+                                    <tr>
+                                        @foreach (var column in Columns)
+                                        {
                                             var style = ComputeHeaderStyle(column);
                                             var className = ComputeClass(column);
-                                                                <th style="@style" class="@className">
-                                                @if (column.TitleTemplate != null)
-                                                {
-                                                    RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.TitleTemplate); builder.CloseComponent(); };
-                                                                            <CascadingValue Name="CustomData" Value="@column.CustomData">
-                                                        @renderFragment
-                                                                            </CascadingValue>
-                                                }
-                                                else
-                                                {
-                                                    @column.Title
-                                                }
-                                                                </th>
+                                            <th style="@style" class="@className">
+                                                @column.Title
+                                            </th>
                                         }
-                                                    </tr>
-                                                </thead>
+                                    </tr>
+                                </tfoot>
                             }
-
-                            @if (!Loading && string.IsNullOrEmpty(ErrorText))
-                            {
-                                                <tbody class="@BodyClass">
-                                    @foreach (var row in Data)
-                                    {
-                                        var item = row.Item;
-                                        var key = row.Key;
-                                        var cellClass = row.Expanded ? ExpandedCellClass : CellClass;
-
-                                                            <tr @key=key id="@key" style="@(string.IsNullOrEmpty(ScrollMarginTop) ? "" : "scroll-margin-top:" + ScrollMarginTop + ";")">
-                                            @if (Expandable)
-                                            {
-                                                                        <td class="@(ExpandChevronClass + (string.IsNullOrEmpty(cellClass) ? string.Empty : " " + cellClass))">
-                                                    @if (row.Expanded)
-                                                    {
-                                                                                    <i class="fas fa-chevron-up" @onclick="@(() => ContractItem(row))"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                                                    <i class="fas fa-chevron-down" @onclick="@(() => ExpandItem(row))"></i>
-                                                    }
-                                                                        </td>
-                                            }
-
-                                            @foreach (var column in Columns)
-                                            {
-                                                var style = ComputeStyle(column, item);
-                                                var className = ComputeClass(column, cellClass);
-
-                                                @if (column.Template != null)
-                                                {
-                                                    RenderFragment renderFragment = (builder) => { builder.OpenComponent(0, column.Template); builder.CloseComponent(); };
-                                                                                <td style="@style" class="@className">
-                                                                                    <CascadingValue Value="@item">
-                                                                                        <CascadingValue Value="ActionLauncher">
-                                                                @renderFragment
-                                                                                        </CascadingValue>
-                                                                                    </CascadingValue>
-                                                                                </td>
-                                                }
-                                                else if (column.FragmentBuilder != null)
-                                                {
-                                                                                <td style="@style" class="@className">
-                                                                                    <CascadingValue Value="@item">
-                                                                                        <CascadingValue Value="ActionLauncher">
-                                                                @column.FragmentBuilder(item)
-                                                                                        </CascadingValue>
-                                                                                    </CascadingValue>
-                                                                                </td>
-                                                }
-                                                else
-                                                {
-                                                                                <td style="@style" class="@className">
-                                                        @column.Source.Invoke(item)
-                                                                                </td>
-                                                }
-                                            }
-                                                            </tr>
-
-                                        @if (AdditionalRowTemplate != null)
-                                        {
-                                                                    <tr>
-                                                                        <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="@ExpandedItemClass">
-                                                    @AdditionalRowTemplate(item)
-                                                                        </td>
-                                                                    </tr>
-                                        }
-                                        else if (row.Expanded)
-                                        {
-                                                                    <tr>
-                                                                        <td colspan="@(row.Expanded ? Columns.Count + 1 : Columns.Count)" class="@ExpandedItemClass">
-                                                                            <CascadingValue Value="@this">
-                                                        @row.Content
-                                                                            </CascadingValue>
-                                                                        </td>
-                                                                    </tr>
-                                        }
-                                    }
-                                                </tbody>
-
-                                @if (Data.Count > 0 && ShowTableFooter)
-                                {
-                                                        <tfoot class="@FooterClass">
-                                                            <tr>
-                                            @foreach (var column in Columns)
-                                            {
-                                                var style = ComputeHeaderStyle(column);
-                                                var className = ComputeClass(column);
-                                                                        <th style="@style" class="@className">
-                                                    @column.Title
-                                                                        </th>
-                                            }
-                                                            </tr>
-                                                        </tfoot>
-                                }
-                            }
-                                    </table>
-                                </div>
-
-                    @if (Loading)
-                    {
-                        @LoadingTemplate
-                    }
-                    else if (!string.IsNullOrEmpty(ErrorText))
-                    {
-                        @if (ErrorTemplate == null)
-                        {
-                                                <div class="text-danger text-center">@ErrorText</div>
                         }
-                        else
-                        {
-                            @ErrorTemplate(ErrorText)
-                        }
-                    }
-                }
-                else
+                    </table>
+                </div>
+
+                @if (Loading)
                 {
-                    @if (Loading && !_addingItems)
+                    @LoadingTemplate
+                }
+                else if (!string.IsNullOrEmpty(ErrorText))
+                {
+                    @if (ErrorTemplate == null)
                     {
-                        @LoadingTemplate
+                        <div class="text-danger text-center">@ErrorText</div>
                     }
-
-                    else if (!string.IsNullOrEmpty(ErrorText))
-                    {
-                        @if (ErrorTemplate == null)
-                        {
-                                                <p class="text-danger text-center">@ErrorText</p>
-                        }
-                        else
-                        {
-                            @ErrorTemplate(ErrorText)
-                        }
-                    }
-
                     else
                     {
-                        @foreach (var row in Data)
-                        {
-                            var item = row.Item;
-                            var key = row.Key;
-                                                <div @key=key>
-                                @ListViewTemplate(item)
-                                                </div>
-                        }
-
-                        @if (Loading && _addingItems)
-                        {
-                            @LoadingTemplate
-                        }
+                        @ErrorTemplate(ErrorText)
                     }
                 }
-                    </div>
+            }
+            else
+            {
+                @if (Loading && !_addingItems)
+                {
+                    @LoadingTemplate
+                }
+
+                else if (!string.IsNullOrEmpty(ErrorText))
+                {
+                    @if (ErrorTemplate == null)
+                    {
+                        <p class="text-danger text-center">@ErrorText</p>
+                    }
+                    else
+                    {
+                        @ErrorTemplate(ErrorText)
+                    }
+                }
+
+                else
+                {
+                    @foreach (var row in Data)
+                    {
+                        var item = row.Item;
+                        var key = row.Key;
+                        <div @key=key>
+                            @ListViewTemplate(item)
+                        </div>
+                    }
+
+                    @if (Loading && _addingItems)
+                    {
+                        @LoadingTemplate
+                    }
+                }
+            }
         }
 
         @if (Data.Count > 0 && IsPageable && !(_pageNumber == 1 && !HasMoreData))
         {
             @if (PagingStyle == PagingStyle.Buttons)
             {
-                            <div class="row my-1">
-                                <div class="col-12 col-sm-6">
-                                    <ul class="pagination moongrid-pager mb-2">
+                <div class="row my-1">
+                    <div class="col-12 col-sm-6">
+                        <ul class="pagination moongrid-pager mb-2">
                             @if (!HideInactivePager || _pageNumber > 1)
                             {
-                                                <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
-                                                    <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
-                                                        <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
-                                                    </div>
-                                                </li>
+                                <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
+                                    <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
+                                        <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
+                                    </div>
+                                </li>
                             }
 
-                                        <li class="page-item">
-                                            <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
+                            <li class="page-item">
+                                <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
                                     @(string.Format(Localization.PageNumberText, _pageNumber))
-                                            </div>
-                                        </li>
+                                </div>
+                            </li>
 
                             @if (!HideInactivePager || HasMoreData)
                             {
-                                                <li class="page-item@(!HasMoreData ? " disabled" : "")">
-                                                    <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
+                                <li class="page-item@(!HasMoreData ? " disabled" : "")">
+                                    <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
                                         @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
-                                                    </div>
-                                                </li>
+                                    </div>
+                                </li>
                             }
-                                    </ul>
-                                </div>
+                        </ul>
+                    </div>
 
                     @if (CanChangePageSize)
                     {
-                                        <div class="col-12 col-sm-6 text-sm-end">
-                                            <div class="moongrid-pagesize mb-2">
-                                                <label for="pagecount">@Localization.ItemsPerPage</label>
-                                                <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
+                        <div class="col-12 col-sm-6 text-sm-end">
+                            <div class="moongrid-pagesize mb-2">
+                                <label for="pagecount">@Localization.ItemsPerPage</label>
+                                <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
                                     @foreach (var pageSize in PageSizes.OrderBy(x => x))
                                     {
-                                                            <option value="@pageSize">@pageSize</option>
+                                        <option value="@pageSize">@pageSize</option>
                                     }
-                                                </select>
-                                            </div>
-                                        </div>
-                    }
+                                </select>
                             </div>
+                        </div>
+                    }
+                </div>
             }
 
             @if (PagingStyle == PagingStyle.LoadMore && HasMoreData && !Loading)
             {
-                            <div class="text-center my-3">
-                                <button class="btn btn-dark" @onclick="LoadMore">@Localization.LoadMore</button>
-                            </div>
+                <div class="text-center my-3">
+                    <button class="btn btn-dark" @onclick="LoadMore">@Localization.LoadMore</button>
+                </div>
             }
 
-                    <div id="@Id-pager"></div>
+            <div id="@Id-pager"></div>
         }
     }
 </CascadingValue>

@@ -35,6 +35,7 @@ namespace MoonGrid
         [Parameter] public RenderFragment<string> ErrorTemplate { get; set; }
         [Parameter] public RenderFragment DetailsTemplate { get; set; }
         [Parameter] public RenderFragment<TItem> ListViewTemplate { get; set; }
+        [Parameter] public RenderFragment CompleteListViewTemplate { get; set; }
         [Parameter] public RenderFragment<TItem> AdditionalRowTemplate { get; set; }
         [Parameter] public RenderFragment NewButtonTemplate { get; set; }
         [Parameter] public bool CanChangePageSize { get; set; } = false;

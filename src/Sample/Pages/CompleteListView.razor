@@ -1,18 +1,14 @@
-﻿@page "/listview"
+﻿@page "/completelistview"
 
 <div class="container-fluid">
-    <h2>List View</h2>
+    <h2>Fill List View</h2>
 </div>
 
 <div class="container-fluid">
     <MoonGrid.Grid TItem="Product" DataSource="@GetProductData">
-        <ListViewTemplate Context="Product">
-            <div class="mb-2">
-                <h3>Product name</h3>
-                <p>@Product.Name</p>
-            </div>
-            <hr />
-        </ListViewTemplate>
+        <CompleteListViewTemplate>
+            <Sample.Components.FullListView></Sample.Components.FullListView>
+        </CompleteListViewTemplate>
     </MoonGrid.Grid>
 </div>
 

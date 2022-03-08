@@ -1,0 +1,15 @@
+﻿@typeparam TItem
+
+@foreach (var row in Data)
+{
+    var item = row.Item;
+    var key = row.Key;
+    <div @key=key>
+        @ListViewTemplate(item)
+    </div>
+}
+
+@code {
+    [CascadingParameter] public List<DisplayableItem<TItem>> Data { get; set; }
+    [CascadingParameter] public RenderFragment<TItem> ListViewTemplate { get; set; }
+}

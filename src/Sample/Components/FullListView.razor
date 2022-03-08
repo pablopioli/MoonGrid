@@ -1,0 +1,15 @@
+﻿<ul class="list-group shadow">
+    @foreach (var row in Data)
+    {
+        <li class="list-group-item" @key=row.Key>
+            <div class="mb-2">
+                <h3>Product name</h3>
+                <p>@row.Item.Name</p>
+            </div>
+        </li>
+    }
+</ul>
+
+@code {
+    [CascadingParameter] public List<DisplayableItem<Sample.Product>> Data { get; set; }
+}

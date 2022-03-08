@@ -114,7 +114,7 @@
 
         else
         {
-            @if (ListViewTemplate == null)
+            @if (ListViewTemplate == null && CompleteListViewTemplate == null)
             {
                 <div class="@(UseResponsiveGrid ? "table-responsive" : "row flex-nowrap") no-gutters">
                     <table class="table moongrid-table mr-2 me-2 @(TableClass) @(FreezeFirstColumn ? " moongrid-table-coolfreeze" : "")">
@@ -247,57 +247,45 @@
                         }
                     </table>
                 </div>
-
-                @if (Loading)
-                {
-                    @LoadingTemplate
-                }
-                else if (!string.IsNullOrEmpty(ErrorText))
-                {
-                    @if (ErrorTemplate == null)
-                    {
-                        <div class="text-danger text-center">@ErrorText</div>
-                    }
-                    else
-                    {
-                        @ErrorTemplate(ErrorText)
-                    }
-                }
             }
             else
             {
-                @if (Loading && !_addingItems)
+                @if (!Loading && string.IsNullOrEmpty(ErrorText))
                 {
-                    @LoadingTemplate
-                }
+                    @if (ListViewTemplate != null)
+                    {
+                        <CascadingValue Value=Data>
+                            <CascadingValue Value=ListViewTemplate>
+                                <ListViewDisplay TItem=TItem />
+                            </CascadingValue>
+                        </CascadingValue>
+                    }
 
-                else if (!string.IsNullOrEmpty(ErrorText))
+                    else if (CompleteListViewTemplate != null)
+                    {
+                        <CascadingValue Value=Data>
+                            <CascadingValue Value=ListViewTemplate>
+                                @CompleteListViewTemplate
+                            </CascadingValue>
+                        </CascadingValue>
+                    }
+                }
+            }
+
+            @if (Loading)
+            {
+                @LoadingTemplate
+            }
+
+            else if (!string.IsNullOrEmpty(ErrorText))
+            {
+                @if (ErrorTemplate == null)
                 {
-                    @if (ErrorTemplate == null)
-                    {
-                        <p class="text-danger text-center">@ErrorText</p>
-                    }
-                    else
-                    {
-                        @ErrorTemplate(ErrorText)
-                    }
+                    <p class="text-danger text-center">@ErrorText</p>
                 }
-
                 else
                 {
-                    @foreach (var row in Data)
-                    {
-                        var item = row.Item;
-                        var key = row.Key;
-                        <div @key=key>
-                            @ListViewTemplate(item)
-                        </div>
-                    }
-
-                    @if (Loading && _addingItems)
-                    {
-                        @LoadingTemplate
-                    }
+                    @ErrorTemplate(ErrorText)
                 }
             }
         }

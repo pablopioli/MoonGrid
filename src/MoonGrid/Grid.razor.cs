@@ -16,6 +16,7 @@ namespace MoonGrid
         [Parameter] public ICollection<OrderOption> OrderOptions { get; set; } = Array.Empty<OrderOption>();
         [Parameter] public ICollection<ActionButton> ActionButtons { get; set; } = Array.Empty<ActionButton>();
         [Parameter] public ICollection<GridColumn<TItem>> Columns { get; set; } = Array.Empty<GridColumn<TItem>>();
+        [Parameter] public ICollection<HeaderGroup> HeaderGroups { get; set; } = Array.Empty<HeaderGroup>();
         [Parameter] public RenderFragment ActionToolbar { get; set; }
         [Parameter] public EventCallback OnNewItem { get; set; }
         [Parameter] public bool ShowAddNewButton { get; set; }

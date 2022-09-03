@@ -1,0 +1,57 @@
+/* _content/MoonGrid/Grid.razor.rz.scp.css */
+.moongrid-table[b-09mu2i773n] {
+    width: 100%;
+    margin-bottom: 0px;
+}
+
+.moongrid-cell[b-09mu2i773n] {
+    overflow-wrap: break-word;
+}
+
+.moongrid-table-striped[b-09mu2i773n] {
+}
+
+    .moongrid-table-striped tr:nth-child(odd) > td[b-09mu2i773n] {
+        background-color: white;
+    }
+
+    .moongrid-table-striped tr:nth-child(even) > td[b-09mu2i773n] {
+        background-color: #F2F2F2;
+    }
+
+    .moongrid-table-striped tr:nth-child(odd) > th[b-09mu2i773n] {
+        background-color: rgb(36, 80, 105);
+        color: white;
+        font-weight: 200;
+    }
+
+.moongrid-additional-row[b-09mu2i773n] {
+    border-top: 0px;
+    }
+
+.moongrid-table-coolfreeze[b-09mu2i773n] {
+}
+
+    .moongrid-table-coolfreeze th:first-child[b-09mu2i773n],
+    .moongrid-table-coolfreeze td:first-child[b-09mu2i773n] {
+        position: sticky;
+        left: 0px;
+        z-index: 1;
+    }
+
+    .moongrid-table-coolfreeze th[b-09mu2i773n] {
+        transform: scale(0.999);
+    }
+
+    .moongrid-table-coolfreeze td[b-09mu2i773n] {
+        transform: scale(0.999);
+    }
+
+.moongrid-pager-button[b-09mu2i773n] {
+    user-select: none;
+}
+
+.moongrid-pager-number[b-09mu2i773n]
+{
+    color: inherit;
+}

@@ -1,0 +1,48 @@
+﻿@page "/headergroups"
+
+<div class="container-fluid">
+    <h2>Basic sample</h2>
+</div>
+
+<div class="container-fluid">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" 
+                   HeaderGroups="@Groups" DataSource="@GetProductData"
+                   HeaderClass="black-header" TableClass="black-header-table">
+    </MoonGrid.Grid>
+</div>
+
+@code {
+    public GridColumn<Product>[] Columns;
+    public HeaderGroup[] Groups;
+
+    protected override void OnInitialized()
+    {
+        Columns = new[] {
+            new GridColumn<Product>("Name", x => x.Name, ColumnWidth.FromEm(30)),
+            new GridColumn<Product>("Sku", x => x.Sku, ColumnWidth.FromEm(12)),
+            new GridColumn<Product>("Category", x => x.Category),
+            new GridColumn<Product>("Price", x => x.Price.ToString("C2"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment: ColumnAlignment.Right),
+            new GridColumn<Product>("Discounted", x => (x.Stock * 0.9).ToString("N0"),
+                                             ColumnWidth.FromEm(10),
+                                             alignment:ColumnAlignment.Right)
+        };
+
+        Groups = new[] { new HeaderGroup("BasicData", 3), new HeaderGroup("Prices", 2) };
+    }
+
+    public Task<QueryResult<Product>> GetProductData(QueryOptions<Product> queryOptions)
+    {
+        // You generally do this in the server, send the query options via HttpClient
+        // Use sample data in this example
+        var data = Program.FakeData;
+        var pagedData = data.Skip((queryOptions.PageNumber - 1) * queryOptions.PageSize).Take(queryOptions.PageSize + 1).ToArray();
+
+        var result = new QueryResult<Product>();
+        result.ResultData = pagedData.Take(queryOptions.PageSize).ToArray();
+        result.HasMoreData = pagedData.Length == queryOptions.PageSize + 1;
+
+        return Task.FromResult(result);
+    }
+}

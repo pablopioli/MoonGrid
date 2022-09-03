@@ -121,6 +121,19 @@
                         @if (ShowTableHeader)
                         {
                             <thead class="@HeaderClass">
+
+                                @if (HeaderGroups != null && HeaderGroups.Count > 0)
+                                {
+                                    <tr>
+                                        @foreach (var headerGroup in HeaderGroups)
+                                        {
+                                            <th colspan="@headerGroup.ColumnCount">
+                                                @headerGroup.Title
+                                            </th>
+                                        }
+                                    </tr>
+                                }
+
                                 <tr>
                                     @if (Expandable)
                                     {

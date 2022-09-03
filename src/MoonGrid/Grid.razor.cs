@@ -187,8 +187,8 @@ namespace MoonGrid
 
         private async Task CreateJsModule()
         {
-            JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "_content/MoonGrid/moongrid.js");
-            await JsModule.InvokeVoidAsync("addCss", "_content/MoonGrid/MoonGrid.bundle.scp.css");
+            JsModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/MoonGrid/moongrid.js");
+            await JsModule.InvokeVoidAsync("addCss", "./_content/MoonGrid/MoonGrid.bundle.scp.css");
         }
 
         protected override void OnParametersSet()

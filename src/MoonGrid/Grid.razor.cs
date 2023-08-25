@@ -48,7 +48,7 @@ namespace MoonGrid
         [Parameter] public string ExpandChevronClass { get; set; } = "moongrid-chevron-class";
         [Parameter] public bool UseResponsiveGrid { get; set; } = true;
         [Parameter] public bool AsynchronousLoading { get; set; } = false;
-        [Parameter] public MoonGridLocalization Localization { get; set; } = MoonGridLocalization.Default;
+        [Parameter] public ILocalizedSettings LocalizedSettings { get; set; } = Defaults.LocalizedSettings;
         [Parameter] public IEnumerable<TItem> DataItems { get; set; }
         [Parameter] public string CellClass { get; set; } = "";
         [Parameter] public string ExpandedCellClass { get; set; } = "";
@@ -68,6 +68,7 @@ namespace MoonGrid
         [Inject] private IJSRuntime JSRuntime { get; set; }
         [Inject] private ILogger<Grid<TItem>> Logger { get; set; }
 
+
         private readonly string Id = Guid.NewGuid().ToString().Replace("-", "");
         private List<DisplayableItem<TItem>> Data { get; set; } = new List<DisplayableItem<TItem>>();
         private TItem CurrentRow;
@@ -84,6 +85,7 @@ namespace MoonGrid
 
         private int _pageNumber = 1;
         private bool _addingItems;
+        private int _pageCount = 0;
 
         private int _activePageSize = 30;
         public string ActivePageSize
@@ -393,6 +395,8 @@ namespace MoonGrid
             {
                 Loading = false;
             }
+
+            _pageCount = result.PageCount;
 
             StateHasChanged();
         }

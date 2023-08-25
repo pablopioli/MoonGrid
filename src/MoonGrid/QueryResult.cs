@@ -8,6 +8,7 @@ namespace MoonGrid
         public ICollection<T> ResultData { get; set; } = Array.Empty<T>();
         public bool HasMoreData { get; set; }
         public string Error { get; set; }
+        public int PageCount { get; set; }
 
         public QueryResult()
         { }

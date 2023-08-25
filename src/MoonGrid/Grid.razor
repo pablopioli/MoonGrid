@@ -56,15 +56,15 @@
                             <button class="btn btn-secondary@(SmallButtons ? " btn-sm" : "") my-2" data-toggle="collapse" data-bs-toggle="collapse" data-target="#collapse-@Id" data-bs-target="#collapse-@Id" style="vertical-align:top;">
                                 @if (IsFilterActive)
                                 {
-                                    <i class="@Localization.FilterEnabledIcon"></i>
+                                    <i class="@LocalizedSettings.FilterEnabledIcon"></i>
                                 }
                                 else
                                 {
-                                    <i class="@Localization.FilterDisabledIcon"></i>
+                                    <i class="@LocalizedSettings.FilterDisabledIcon"></i>
                                 }
 
                                 <span class="ml-2 m-2">
-                                    @Localization.FilterButtonText
+                                    @LocalizedSettings.FilterButtonText
                                 </span>
                             </button>
                         }
@@ -303,7 +303,7 @@
             }
         }
 
-        @if (Data.Count > 0 && IsPageable && !(_pageNumber == 1 && !HasMoreData))
+        @if (Data.Count > 0 && IsPageable)
         {
             @if (PagingStyle == PagingStyle.Buttons)
             {
@@ -314,22 +314,32 @@
                             {
                                 <li class="page-item@(_pageNumber <= 1 ? " disabled" : "")">
                                     <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-back" @onclick="MoveBack">
-                                        <i class="fas fa-chevron-left mr-2 me-2"></i> @Localization.PreviousButtonText
+                                        <i class="fas fa-chevron-left mr-2 me-2"></i> @LocalizedSettings.PreviousButtonText
                                     </div>
                                 </li>
                             }
 
-                            <li class="page-item">
-                                <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
-                                    @(string.Format(Localization.PageNumberText, _pageNumber))
-                                </div>
-                            </li>
+                            @if (!HideInactivePager || !(_pageNumber == 1 && !HasMoreData))
+                            {
+                                <li class="page-item">
+                                    <div class="page-link text-nowrap moongrid-pager-button moongrid-pager-number">
+                                        @if (_pageCount > 0)
+                                        {
+                                            @(string.Format(LocalizedSettings.PageNumberTextWithTotalCount, _pageNumber, _pageCount))
+                                        }
+                                        else
+                                        {
+                                            @(string.Format(LocalizedSettings.PageNumberText, _pageNumber))
+                                        }
+                                    </div>
+                                </li>
+                            }
 
                             @if (!HideInactivePager || HasMoreData)
                             {
                                 <li class="page-item@(!HasMoreData ? " disabled" : "")">
                                     <div class="page-link moongrid-pager-button text-nowrap moongrid-pager-next" @onclick="MoveNext">
-                                        @Localization.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
+                                        @LocalizedSettings.NextButtonText <i class="fas fa-chevron-right ml-2 ms-2"></i>
                                     </div>
                                 </li>
                             }
@@ -340,7 +350,7 @@
                     {
                         <div class="col-12 col-sm-6 text-sm-end">
                             <div class="moongrid-pagesize mb-2">
-                                <label for="pagecount">@Localization.ItemsPerPage</label>
+                                <label for="pagecount">@LocalizedSettings.ItemsPerPage</label>
                                 <select id="pagecount" class="ml-2 ms-2 form-control form-select" style="display:inline;width:5rem;box-shadow:none;" @bind="ActivePageSize">
                                     @foreach (var pageSize in PageSizes.OrderBy(x => x))
                                     {
@@ -356,7 +366,7 @@
             @if (PagingStyle == PagingStyle.LoadMore && HasMoreData && !Loading)
             {
                 <div class="text-center my-3">
-                    <button class="btn btn-dark" @onclick="LoadMore">@Localization.LoadMore</button>
+                    <button class="btn btn-dark" @onclick="LoadMore">@LocalizedSettings.LoadMore</button>
                 </div>
             }
 

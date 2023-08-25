@@ -5,13 +5,13 @@
 </div>
 
 <div class="container-fluid">
-    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" Localization="GridLocalization">
+    <MoonGrid.Grid TItem="Product" Columns="@Columns" DataSource="@GetProductData" LocalizedSettings="GridLocalization">
     </MoonGrid.Grid>
 </div>
 
 @code {
     public GridColumn<Product>[] Columns;
-    public MoonGridLocalization GridLocalization { get; set; } = new MoonGrid.Localization.Spanish();
+    public ILocalizedSettings GridLocalization { get; set; } = new MoonGrid.Localization.Spanish();
 
     protected override void OnInitialized()
     {
